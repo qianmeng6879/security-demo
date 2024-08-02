@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>新用户注册</title>
+    <link href="/static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .login {
+            padding: 20px;
+            width: 390px;
+            background-color: white;
+            border-radius: 10px;
+        }
+
+        .login_wrapper {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #codeImage {
+            width: 100px;
+            height: 40px;
+        }
+    </style>
+</head>
+
+<body>
+<div class="login_wrapper bg-light">
+    <div class="login">
+        <form class="form" action="/register" method="post">
+            <h3>新用户注册</h3>
+            <div class="form-group">
+                <input maxlength="12" required class="form-control" autocomplete="off" type="text" placeholder="用户名"
+                       name="username">
+            </div>
+            <div class="form-group">
+                <input maxlength="16" required class="form-control" type="password" id="password" name="password"
+                       placeholder="密码">
+            </div>
+            <div class="form-group">
+                <div class="input-group">
+                    <input maxlength="4" required autocomplete="off" class="form-control" type="text" id="code"
+                           name="code"
+                           placeholder="验证码">
+                    <div class="input-group-append">
+                        <img id="codeImage">
+                    </div>
+                </div>
+            </div>
+            <div th:if="${session.error}" class="alert alert-danger" role="danger">
+                <span th:text="${session.error}"/>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary form-control">注册</button>
+            </div>
+            <div class="form-group">
+                <div style="display: flex; justify-content: end;">
+                    <a href="/login" class="text-secondary">返回登录</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+
+    function generateUUID() {
+        var d = new Date().getTime(); //Timestamp
+        var d2 = (performance && performance.now && (performance.now() * 1000)) || 0; //Time in microseconds since page-load or 0 if unsupported
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+            var r = Math.random() * 16; //random number between 0 and 16
+            if (d > 0) { //Use timestamp until depleted
+                r = (d + r) % 16 | 0;
+                d = Math.floor(d / 16);
+            } else { //Use microseconds since page-load if supported
+                r = (d2 + r) % 16 | 0;
+                d2 = Math.floor(d2 / 16);
+            }
+            return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+        });
+    }
+    function refreshCodeImage(el) {
+        el.src = "/code/image?flag=" + generateUUID()
+    }
+
+    const codeImage = document.getElementById("codeImage")
+    codeImage.onclick = function (e) {
+        refreshCodeImage(codeImage)
+    }
+
+    refreshCodeImage(codeImage)
+</script>
+</body>
+
+</html>

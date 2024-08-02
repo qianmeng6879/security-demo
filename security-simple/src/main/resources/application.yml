@@ -1,0 +1,33 @@
+spring:
+  mvc:
+    static-path-pattern: /static/**
+  thymeleaf:
+    cache: false
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/oauth_provider_service
+    username: postgres
+    password: postgres
+
+  security:
+    oauth2:
+      client:
+        registration:
+#          github:
+#            client-id: Ov23lilHVzypKogk2jSA
+#            client-secret: 4dcd010f08fe46be6e96d906e5ddc4face27db15
+          weibo:
+            provider: weibo
+            client-id: 2459617706
+            clientSecret: 0da8b21da070f8c5cad17e409691741e
+            authorizationGrantType: code
+            scope: all
+            redirectUri: http://mxzero.top/login/oauth2/code/weibo
+
+        provider:
+          weibo:
+            #            issuer-uri: https://api.weibo.com
+            authorizationUri: https://api.weibo.com/oauth2/authorize
+            tokenUri: https://api.weibo.com/oauth2/access_token
+            userInfoUri: https://api.weibo.com/oauth2/get_token_info
+            userNameAttribute: id

@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>用户登录</title>
+    <link href="/static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .login {
+            width: 300px;
+        }
+
+        .login_wrapper {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
+</head>
+
+<body>
+<div class="login_wrapper">
+    <div class="login">
+        <form class="form" action="/login" method="post">
+            <h3>用户登录</h3>
+            <div class="form-group">
+                <input maxlength="12" class="form-control" autocomplete="off" type="text" placeholder="用户名。。。"
+                       name="username">
+            </div>
+            <div class="form-group">
+                <input maxlength="16" class="form-control" type="password" id="password" name="password"
+                       placeholder="密码。。。">
+            </div>
+            <div th:if="${session.SPRING_SECURITY_LAST_EXCEPTION}" class="alert alert-danger" role="danger">
+                <span th:text="${session.SPRING_SECURITY_LAST_EXCEPTION.message}"/>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary form-control">登录</button>
+            </div>
+            <div class="form-group">
+                <div style="display: flex; justify-content: end;">
+                    <a href="/register" class="text-secondary">新用户注册</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+</body>
+
+</html>
