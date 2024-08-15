@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h1>WebSocket Example</h1>
+<button id="connectBtn">Connect to WebSocket</button>
+<button id="closeBtn">Close WebSocket</button>
+<button id="sendMessageBtn">Send Message</button>
+<div id="messages"></div>
+
+<script>
+    let socket = null;
+
+    document.getElementById("connectBtn").addEventListener("click", () => {
+        if (socket && socket.readyState === WebSocket.OPEN){
+            return;
+        }
+        socket = new WebSocket("ws://" + window.location.host + "/ws/echo");
+
+        socket.onopen = function(event) {
+            console.log("WebSocket is open now.");
+        };
+
+        socket.onmessage = function(event) {
+            document.getElementById("messages").innerText += event.data + "\n";
+        };
+
+        socket.onclose = function(event) {
+            console.log("WebSocket is closed now.");
+        };
+
+        socket.onerror = function(error) {
+            console.error("WebSocket error observed:", error);
+        };
+    });
+
+    document.getElementById("sendMessageBtn").addEventListener("click", () => {
+        if (socket && socket.readyState === WebSocket.OPEN) {
+            socket.send("Hello WebSocket");
+        } else {
+            console.log("WebSocket is not open.");
+        }
+    });
+
+    document.getElementById("closeBtn").addEventListener("click", () => {
+        if(socket){
+            socket.close();
+        }
+    });
+</script>
+</body>
+</html>

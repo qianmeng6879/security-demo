@@ -8,12 +8,13 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.LogoutConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import top.mxzero.security.components.*;
-import top.mxzero.security.service.MemberService;
 import top.mxzero.security.service.impl.UserDetailsServiceImpl;
 
 /**
@@ -37,30 +38,59 @@ public class SecurityConfig {
 
     public static final String LOGIN_PAGE = "/login";
 
+
     @Bean
-    public SecurityFilterChain securityFilterChain(
-            HttpSecurity http,
-            MemberService memberService
-    ) throws Exception {
-        http.authorizeHttpRequests((authorize) -> authorize
-                        .anyRequest().permitAll())
-                .rememberMe(config -> config.key("securityRemember"))
-                .logout(LogoutConfigurer::permitAll)
-                .formLogin(login -> login.loginPage(LOGIN_PAGE).permitAll().loginProcessingUrl(LOGIN_PAGE)
-                        .successHandler(new LoginSuccessHandler(memberService))
-                        .failureHandler(new LoginFailHandler(LOGIN_PAGE + "?error"))
+    public SecurityFilterChain apiSecurityFilterChain(HttpSecurity http) throws Exception {
+        http.securityMatcher("/api/**") // 仅匹配 /api/** 路径
+                .authorizeHttpRequests(authorization ->
+                        authorization.anyRequest().authenticated() // API 请求必须认证
                 )
-                .exceptionHandling(handler -> {
-                    handler
-                            .accessDeniedHandler(new JsonAccessDeniedHandler())
-                            .authenticationEntryPoint(new JSONAuthenticationEntryPoint(LOGIN_PAGE));
-                })
                 .sessionManagement(session ->
-                        session.maximumSessions(1)
-                                .expiredSessionStrategy(new JSONSessionExpiredStrategy())
+                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS) // 无状态模式
                 )
+                .exceptionHandling(handler ->
+                        handler.accessDeniedHandler(new JsonAccessDeniedHandler())
+                                .authenticationEntryPoint(new JSONAuthenticationEntryPoint(LOGIN_PAGE))
+                )
+                .csrf(AbstractHttpConfigurer::disable)
+                .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class); // 添加 JWT 过滤器
+        return http.build();
+    }
+
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http.authorizeHttpRequests(authorization ->
+                        authorization.requestMatchers(LOGIN_PAGE, "/public/**").permitAll() // 允许匿名访问
+                                .anyRequest().authenticated() // 其他请求必须认证
+                )
+                .formLogin(login ->
+                        login.loginPage(LOGIN_PAGE).permitAll()
+                                .loginProcessingUrl(LOGIN_PAGE)
+                                .successHandler(loginSuccessHandler()) // 登录成功处理器
+                                .failureHandler(new LoginFailHandler(LOGIN_PAGE + "?error"))
+                )
+                .sessionManagement(session ->
+                                session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED) // 如果需要则创建会话
+                                        .maximumSessions(1) // 最大会话数
+                )
+                .rememberMe(remember ->
+                        remember.key("securityRemember")
+                )
+                .logout(LogoutConfigurer::permitAll)
                 .csrf(AbstractHttpConfigurer::disable);
         return http.build();
+    }
+
+
+    @Bean
+    public JwtAuthenticationFilter jwtAuthenticationFilter() {
+        return new JwtAuthenticationFilter();
+    }
+
+    @Bean
+    public LoginSuccessHandler loginSuccessHandler() {
+        return new LoginSuccessHandler();
     }
 
     @Bean

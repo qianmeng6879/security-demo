@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.security.Principal;
+import java.util.Map;
 
 /**
  * @author Peng
@@ -15,7 +16,15 @@ import java.security.Principal;
 public class UserinfoController {
     @PreAuthorize("isAuthenticated()")
     @RequestMapping("/userinfo")
-    public Object userinfoApi(Principal principal) {
+    public Object userinfoEndpoint(Principal principal) {
         return principal.getName();
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @RequestMapping("/api/userinfo")
+    public Map<String, String> userinfoApi(Principal principal) {
+        return Map.of(
+                "name",principal.getName()
+        );
     }
 }
