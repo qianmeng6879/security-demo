@@ -12,6 +12,7 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -28,7 +29,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter implements App
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        if (request.getRequestURI().startsWith("/api/")) {
+        if (new MvcRequestMatcher(null, "/api/**").matches(request)) {
             String token = request.getHeader("Authorization");
             Authentication authentication = null;
             if (token != null && token.startsWith("Bearer ")) {
@@ -48,7 +49,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter implements App
 
     private Authentication getAuthentication(String token) {
         Object name = cache.getIfPresent(token);
-        log.info("token:{}, name:{}", token, name);
         if (name != null) {
             return new UsernamePasswordAuthenticationToken(name.toString(), null, Collections.emptyList());
         }

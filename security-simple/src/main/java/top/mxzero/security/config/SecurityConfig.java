@@ -61,8 +61,9 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(authorization ->
-                        authorization.requestMatchers(LOGIN_PAGE, "/public/**").permitAll() // 允许匿名访问
-                                .anyRequest().authenticated() // 其他请求必须认证
+                        authorization
+                                .requestMatchers("/ws/echo").authenticated() // websocket认证
+                                .anyRequest().permitAll()
                 )
                 .formLogin(login ->
                         login.loginPage(LOGIN_PAGE).permitAll()
@@ -71,8 +72,8 @@ public class SecurityConfig {
                                 .failureHandler(new LoginFailHandler(LOGIN_PAGE + "?error"))
                 )
                 .sessionManagement(session ->
-                                session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED) // 如果需要则创建会话
-                                        .maximumSessions(1) // 最大会话数
+                        session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED) // 如果需要则创建会话
+                                .maximumSessions(1) // 最大会话数
                 )
                 .rememberMe(remember ->
                         remember.key("securityRemember")
