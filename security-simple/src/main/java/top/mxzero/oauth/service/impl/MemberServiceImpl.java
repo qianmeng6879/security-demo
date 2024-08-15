@@ -71,10 +71,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public List<String> getRolesByMemberId(Long memberId) {
-//        if (!memberMapper.exists(new QueryWrapper<Member>().eq("id", memberId)) {
-//            throw new ServiceException("账户ID不存在");
-//        }
-        List<Long> roleIds = memberRoleMapper.selectList(new QueryWrapper<MemberRole>().eq("member_id", memberId).select("id")).stream().map(MemberRole::getRoleId).toList();
+        List<Long> roleIds = memberRoleMapper.selectList(new QueryWrapper<MemberRole>().eq("member_id", memberId).select("role_id")).stream().map(MemberRole::getRoleId).toList();
         if (roleIds.isEmpty()) {
             return Collections.emptyList();
         }

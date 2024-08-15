@@ -1,4 +1,4 @@
-package top.mxzero.oauth.components;
+package top.mxzero.oauth.components.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;

@@ -12,10 +12,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import top.mxzero.oauth.components.JSONAuthenticationEntryPoint;
-import top.mxzero.oauth.components.JsonAccessDeniedHandler;
-import top.mxzero.oauth.components.LoginFailHandler;
-import top.mxzero.oauth.components.LoginSuccessHandler;
+import top.mxzero.oauth.components.security.*;
 import top.mxzero.oauth.service.MemberService;
 import top.mxzero.oauth.service.impl.UserDetailsServiceImpl;
 
@@ -58,7 +55,10 @@ public class SecurityConfig {
                             .accessDeniedHandler(new JsonAccessDeniedHandler())
                             .authenticationEntryPoint(new JSONAuthenticationEntryPoint(LOGIN_PAGE));
                 })
-                .sessionManagement(session -> session.maximumSessions(1))
+                .sessionManagement(session ->
+                        session.maximumSessions(1)
+                                .expiredSessionStrategy(new JSONSessionExpiredStrategy())
+                )
                 .csrf(AbstractHttpConfigurer::disable);
         return http.build();
     }

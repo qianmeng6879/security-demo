@@ -1,6 +1,11 @@
 package top.mxzero.oauth.controller;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.security.Principal;
 
 /**
  * @author Peng
@@ -10,10 +15,10 @@ import org.springframework.stereotype.Controller;
 @Controller
 public class IndexController {
 
-//    @GetMapping("/")
-//    public String indexPage(OAuth2User user, Model model) {
-//        String name = user.getName();
-//        model.addAttribute("name", user);
-//        return "index";
-//    }
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/role/admin")
+    @ResponseBody
+    public String adminRoleApi(Principal principal) {
+        return principal.getName();
+    }
 }
