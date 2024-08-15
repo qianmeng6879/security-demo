@@ -1,11 +1,10 @@
 package top.mxzero.oauth.controller;
 
-import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.security.Principal;
-import java.util.Map;
 
 /**
  * @author Peng
@@ -14,17 +13,9 @@ import java.util.Map;
  */
 @RestController
 public class UserinfoController {
+    @PreAuthorize("isAuthenticated()")
     @RequestMapping("/userinfo")
     public Object userinfoApi(Principal principal) {
-        if (principal instanceof OAuth2AuthenticationToken user) {
-            String nickname = user.getPrincipal().getAttribute("name");
-            String avatarUrl = user.getPrincipal().getAttribute("avatar_url");
-            return Map.of(
-                    "nickname", nickname,
-                    "avatar", avatarUrl,
-                    "id",principal.getName()
-            );
-        }
         return principal.getName();
     }
 }
