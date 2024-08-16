@@ -1,4 +1,4 @@
-package top.mxzero.security;
+package top.mxzero.session;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -7,12 +7,12 @@ import org.springframework.session.jdbc.config.annotation.web.http.EnableJdbcHtt
 /**
  * @author Peng
  * @email qianmeng6879@163.com
- * @since 2024/7/30
+ * @since 2024/8/16
  */
 @EnableJdbcHttpSession
 @SpringBootApplication
-public class StartSecurityApplication {
+public class StartSessionApplication {
     public static void main(String[] args) {
-        SpringApplication.run(StartSecurityApplication .class,args);
+        SpringApplication.run(StartSessionApplication.class, args);
     }
 }

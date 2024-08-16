@@ -11,6 +11,7 @@
     <modules>
         <module>security-simple</module>
         <module>oauth2-server</module>
+        <module>session-simple</module>
     </modules>
 
     <properties>

@@ -2,12 +2,12 @@ package top.mxzero.security.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.annotation.web.configurers.LogoutConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -71,18 +71,23 @@ public class SecurityConfig {
                                 .successHandler(loginSuccessHandler()) // 登录成功处理器
                                 .failureHandler(new LoginFailHandler(LOGIN_PAGE + "?error"))
                 )
-                .sessionManagement(session ->
-                        session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED) // 如果需要则创建会话
-                                .maximumSessions(1) // 最大会话数
-                )
                 .rememberMe(remember ->
-                        remember.key("securityRemember")
+                        remember.rememberMeParameter("securityRemember").key("mxzero-top-rem")
                 )
-                .logout(LogoutConfigurer::permitAll)
+                .logout(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable);
         return http.build();
     }
 
+//    @Bean
+//    public SessionRegistry sessionRegistry() {
+//        return new SessionRegistryImpl();
+//    }
+
+//    @Bean
+//    public HttpSessionEventPublisher httpSessionEventPublisher() {
+//        return new HttpSessionEventPublisher();
+//    }
 
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter() {
