@@ -3,16 +3,17 @@ package top.mxzero.security.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.session.SessionInformation;
-import org.springframework.security.core.session.SessionRegistry;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.session.SessionRepository;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import top.mxzero.security.entity.UserSession;
+import top.mxzero.security.mapper.UserSessionMapper;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author Peng
@@ -20,48 +21,28 @@ import java.util.Map;
  * @since 2024/8/15
  */
 @Slf4j
-//@RestController
-//@RequestMapping("/session")
+@RestController
+@RequestMapping("/session")
 public class LoginUserController {
     @Autowired
-    public SessionRegistry sessionRegistry;
+    private SessionRepository sessionRepository;
 
+    @Autowired
+    private UserSessionMapper sessionMapper;
 
     @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("users/break/{sessionId}")
+    @GetMapping("expire/{sessionId}")
     public String breakUserApi(@PathVariable("sessionId") String sessionId) {
-        SessionInformation sessionInformation = sessionRegistry.getSessionInformation(sessionId);
-        if (sessionInformation != null) {
-            sessionInformation.expireNow();
-            sessionRegistry.removeSessionInformation(sessionId);
-            log.info("break session:{}", sessionInformation.getSessionId());
-        }
-
+        sessionRepository.deleteById(sessionId);
+//        sessionMapper.deleteById(sessionId);
         return "success";
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("users")
     public Object userNameListApi() {
-        Map<String, Object> userData = new HashMap<>();
-
-        for (Object principal : sessionRegistry.getAllPrincipals()) {
-            List<Object> list = new ArrayList<>();
-
-            UserDetails userDetails = (UserDetails) principal;
-
-            List<SessionInformation> sessions = sessionRegistry.getAllSessions(principal, false);
-            for (SessionInformation sessionInformation : sessions) {
-                Map<String, Object> data = new HashMap<>();
-                data.put("session_id", sessionInformation.getSessionId());
-                data.put("principal", principal);
-                data.put("isExpire", sessionInformation.isExpired());
-                list.add(data);
-            }
-
-            userData.put(userDetails.getUsername(), list);
-
-        }
-        return userData;
+        Map<String, List<UserSession>> collect = sessionMapper.selectList(null).stream()
+                .collect(Collectors.groupingBy(UserSession::getName));
+        return collect;
     }
 }

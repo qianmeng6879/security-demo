@@ -1,7 +1,6 @@
 package top.mxzero.security.components;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.benmanes.caffeine.cache.Cache;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -13,11 +12,14 @@ import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import org.springframework.util.StringUtils;
+import top.mxzero.security.entity.UserSession;
+import top.mxzero.security.mapper.UserSessionMapper;
 import top.mxzero.security.service.MemberService;
 
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
+import java.util.Date;
 import java.util.Map;
 import java.util.UUID;
 
@@ -30,18 +32,21 @@ import java.util.UUID;
 public class LoginSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler implements ApplicationContextAware {
     private MemberService memberService;
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
-    private Cache<Object, Object> cache;
+    private UserSessionMapper sessionMapper;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws ServletException, IOException {
-        memberService.updateLastLogin(authentication.getName());
+        Date currentTime = new Date();
+        String token = null;
+        UserSession userSession = new UserSession(request.getSession().getId(), authentication.getName(), currentTime, currentTime, UserSession.DeviceType.WEB.value(), token);
         String acceptType = request.getHeader("Accept");
         if (StringUtils.hasLength(acceptType) && acceptType.startsWith(MediaType.APPLICATION_JSON_VALUE)) {
             PrintWriter writer = response.getWriter();
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
             response.setCharacterEncoding(StandardCharsets.UTF_8.name());
-            String token = UUID.randomUUID().toString().replaceAll("-", "");
-            cache.put(token, authentication.getName());
+            token = UUID.randomUUID().toString().replaceAll("-", "");
+            userSession.setDeviceType(UserSession.DeviceType.PHONE.value());
+            userSession.setToken(token);
             writer.print(OBJECT_MAPPER.writeValueAsString(
                     Map.of(
                             "session_id", request.getSession().getId(),
@@ -52,11 +57,14 @@ public class LoginSuccessHandler extends SavedRequestAwareAuthenticationSuccessH
         } else {
             super.onAuthenticationSuccess(request, response, authentication);
         }
+
+        memberService.updateLastLogin(authentication.getName());
+        sessionMapper.insert(userSession);
     }
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        this.cache = applicationContext.getBean(Cache.class);
         this.memberService = applicationContext.getBean(MemberService.class);
+        this.sessionMapper = applicationContext.getBean(UserSessionMapper.class);
     }
 }

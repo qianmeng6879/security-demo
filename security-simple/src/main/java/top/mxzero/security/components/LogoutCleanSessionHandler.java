@@ -5,13 +5,15 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.session.SessionInformation;
-import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.web.authentication.logout.SimpleUrlLogoutSuccessHandler;
 import org.springframework.util.StringUtils;
+import top.mxzero.security.mapper.UserSessionMapper;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -24,26 +26,17 @@ import java.util.Map;
  * @since 2024/8/16
  */
 @Slf4j
-public class LogoutCleanSessionHandler extends SimpleUrlLogoutSuccessHandler {
+public class LogoutCleanSessionHandler extends SimpleUrlLogoutSuccessHandler implements ApplicationContextAware {
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
-    private final SessionRegistry sessionRegistry;
+    private UserSessionMapper sessionMapper;
 
-    public LogoutCleanSessionHandler(SessionRegistry sessionRegistry) {
-        this.sessionRegistry = sessionRegistry;
-    }
 
     @Override
     public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-        if (authentication != null) {
-            // 获取用户的所有会话并清理
-            log.info("logout sessionId:{}", request.getRequestedSessionId());
-            SessionInformation sessionInformation = sessionRegistry.getSessionInformation(request.getRequestedSessionId());
-            if(sessionInformation != null){
-                sessionInformation.expireNow();
-                sessionRegistry.removeSessionInformation(request.getRequestedSessionId());
-            }
-        }
+//        if (authentication != null) {
+//            sessionMapper.deleteById(request.getRequestedSessionId());
+//        }
 
         String acceptType = request.getHeader("Accept");
         if (StringUtils.hasLength(acceptType) && acceptType.startsWith(MediaType.APPLICATION_JSON_VALUE)) {
@@ -59,5 +52,10 @@ public class LogoutCleanSessionHandler extends SimpleUrlLogoutSuccessHandler {
         } else {
             super.handle(request, response, authentication);
         }
+    }
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.sessionMapper = applicationContext.getBean(UserSessionMapper.class);
     }
 }

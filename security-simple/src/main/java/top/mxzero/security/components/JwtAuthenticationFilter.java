@@ -1,6 +1,6 @@
 package top.mxzero.security.components;
 
-import com.github.benmanes.caffeine.cache.Cache;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -14,6 +14,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
+import top.mxzero.security.entity.UserSession;
+import top.mxzero.security.mapper.UserSessionMapper;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -25,10 +27,12 @@ import java.util.Collections;
  */
 @Slf4j
 public class JwtAuthenticationFilter extends OncePerRequestFilter implements ApplicationContextAware {
-    private Cache<Object, Object> cache;
+
+    private UserSessionMapper sessionMapper;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        boolean requireCleanSession = false;
         if (new MvcRequestMatcher(null, "/api/**").matches(request)) {
             String token = request.getHeader("Authorization");
             Authentication authentication = null;
@@ -48,15 +52,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter implements App
     }
 
     private Authentication getAuthentication(String token) {
-        Object name = cache.getIfPresent(token);
-        if (name != null) {
-            return new UsernamePasswordAuthenticationToken(name.toString(), null, Collections.emptyList());
+        UserSession userSession = sessionMapper.selectOne(new QueryWrapper<UserSession>().eq("token", token));
+        if (userSession != null) {
+            return new UsernamePasswordAuthenticationToken(userSession.getName(), null, Collections.emptyList());
         }
         return null; // 示例，实际应返回有效的 Authentication 对象
     }
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        this.cache = applicationContext.getBean(Cache.class);
+        this.sessionMapper = applicationContext.getBean(UserSessionMapper.class);
     }
 }

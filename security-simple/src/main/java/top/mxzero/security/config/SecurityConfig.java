@@ -2,7 +2,6 @@ package top.mxzero.security.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -14,6 +13,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import top.mxzero.security.components.*;
 import top.mxzero.security.service.impl.UserDetailsServiceImpl;
 
@@ -74,20 +74,19 @@ public class SecurityConfig {
                 .rememberMe(remember ->
                         remember.rememberMeParameter("securityRemember").key("mxzero-top-rem")
                 )
-                .logout(Customizer.withDefaults())
+                .logout(logout -> {
+                    logout.logoutSuccessUrl(LOGIN_PAGE)
+                            .logoutSuccessHandler(logoutSuccessHandler());
+                })
                 .csrf(AbstractHttpConfigurer::disable);
         return http.build();
     }
 
-//    @Bean
-//    public SessionRegistry sessionRegistry() {
-//        return new SessionRegistryImpl();
-//    }
 
-//    @Bean
-//    public HttpSessionEventPublisher httpSessionEventPublisher() {
-//        return new HttpSessionEventPublisher();
-//    }
+    @Bean
+    public LogoutSuccessHandler logoutSuccessHandler() {
+        return new LogoutCleanSessionHandler();
+    }
 
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter() {
