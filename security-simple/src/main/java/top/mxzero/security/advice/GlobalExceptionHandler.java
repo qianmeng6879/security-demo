@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.NoHandlerFoundException;
 import top.mxzero.security.exceptions.ServiceException;
 
 import java.util.Map;
@@ -21,8 +22,16 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public Map<String, Object> exceptionHandler(Exception e) {
         log.error(e.getMessage());
+        log.error(e.getClass().getName());
         return Map.of("error", "服务错误", "code", 999);
     }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(NoHandlerFoundException.class)
+    public Map<String, Object> exceptionHandler(NoHandlerFoundException e) {
+        return Map.of("error", "访问的资源不存在", "code", 999);
+    }
+
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(ServiceException.class)

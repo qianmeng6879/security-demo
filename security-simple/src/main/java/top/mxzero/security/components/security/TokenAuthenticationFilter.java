@@ -1,4 +1,4 @@
-package top.mxzero.security.components;
+package top.mxzero.security.components.security;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import jakarta.servlet.FilterChain;

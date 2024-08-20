@@ -1,4 +1,4 @@
-package top.mxzero.security.components;
+package top.mxzero.security.components.security;
 
 import org.springframework.security.access.AccessDecisionVoter;
 import org.springframework.security.access.ConfigAttribute;

@@ -1,4 +1,7 @@
 spring:
+  profiles:
+    active:
+      - dev
   mvc:
     static-path-pattern: /static/**
   thymeleaf:
@@ -8,8 +11,3 @@ spring:
     url: jdbc:postgresql://localhost:5432/security_db
     username: postgres
     password: postgres
-  data:
-    redis:
-      host: localhost
-      port: 6379
-      database: 0

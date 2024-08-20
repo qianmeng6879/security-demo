@@ -1,4 +1,4 @@
-package top.mxzero.security.components;
+package top.mxzero.security.components.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;
@@ -10,9 +10,10 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.web.authentication.logout.SimpleUrlLogoutSuccessHandler;
 import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
+import top.mxzero.security.mapper.UserSessionMapper;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -22,35 +23,32 @@ import java.util.Map;
 /**
  * @author Peng
  * @email qianmeng6879@163.com
- * @since 2024/8/5
+ * @since 2024/8/16
  */
 @Slf4j
-public class LoginFailHandler extends SimpleUrlAuthenticationFailureHandler implements ApplicationContextAware {
+public class LogoutCleanSessionHandler extends SimpleUrlLogoutSuccessHandler implements ApplicationContextAware {
     private ObjectMapper objectMapper;
 
-    public LoginFailHandler(String defaultFailureUrl) {
-        super(defaultFailureUrl);
-    }
+    private UserSessionMapper sessionMapper;
+
 
     @Override
-    public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
+    public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         if (new MvcRequestMatcher(null, "/api/**").matches(request)) {
-            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            response.setStatus(HttpStatus.OK.value());
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
             response.setCharacterEncoding(StandardCharsets.UTF_8.name());
             PrintWriter writer = response.getWriter();
-            writer.print(objectMapper.writeValueAsString(
-                    Map.of("message", exception.getMessage()
-                    )
-            ));
+            writer.print(objectMapper.writeValueAsString(Map.of("message", "退出成功")));
             writer.close();
         } else {
-            super.onAuthenticationFailure(request, response, exception);
+            super.handle(request, response, authentication);
         }
     }
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.sessionMapper = applicationContext.getBean(UserSessionMapper.class);
         this.objectMapper = applicationContext.getBean(ObjectMapper.class);
     }
 }

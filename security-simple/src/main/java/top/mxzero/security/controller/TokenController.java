@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import top.mxzero.security.dto.ApiResponse;
+import top.mxzero.security.dto.RestData;
 import top.mxzero.security.dto.TokenResDTO;
 import top.mxzero.security.dto.UserAuthDTO;
 import top.mxzero.security.service.TokenService;
@@ -21,8 +21,8 @@ public class TokenController {
     private TokenService tokenService;
 
     @PostMapping("/token")
-    public ApiResponse<?> createTokenApi(@Valid @RequestBody UserAuthDTO dto) {
+    public RestData<?> createTokenApi(@Valid @RequestBody UserAuthDTO dto) {
         TokenResDTO<?> tokenRes = tokenService.createToken(dto);
-        return ApiResponse.success(tokenRes.getData(), tokenRes.getCode());
+        return RestData.success(tokenRes.getData(), tokenRes.getCode());
     }
 }

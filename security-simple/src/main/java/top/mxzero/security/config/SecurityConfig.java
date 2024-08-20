@@ -18,7 +18,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
-import top.mxzero.security.components.*;
+import top.mxzero.security.components.security.*;
 import top.mxzero.security.service.impl.UserDetailsServiceImpl;
 
 import java.util.Arrays;

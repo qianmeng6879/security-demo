@@ -1,4 +1,4 @@
-package top.mxzero.security.components;
+package top.mxzero.security.components.security;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.security.web.util.matcher.RequestMatcher;

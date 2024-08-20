@@ -1,4 +1,4 @@
-package top.mxzero.security.components;
+package top.mxzero.security.components.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;
