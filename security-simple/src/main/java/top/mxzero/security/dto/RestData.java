@@ -16,6 +16,8 @@ public class RestData<T> implements Serializable {
     private int code;
     private T data = null;
 
+
+
     public static <T> RestData<T> success(T data) {
         return success(data, "success");
     }

@@ -2,6 +2,7 @@ package top.mxzero.security.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import top.mxzero.security.entity.UserToken;
 
 /**
@@ -11,4 +12,6 @@ import top.mxzero.security.entity.UserToken;
  */
 @Mapper
 public interface UserTokenMapper extends BaseMapper<UserToken> {
+
+    int updateExpiredTokensBatch(@Param("newState") int newState, @Param("currentState") int currentState);
 }

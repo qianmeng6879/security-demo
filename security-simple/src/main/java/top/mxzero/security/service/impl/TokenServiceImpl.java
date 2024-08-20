@@ -13,6 +13,7 @@ import top.mxzero.security.dto.UserAuthDTO;
 import top.mxzero.security.entity.Member;
 import top.mxzero.security.entity.UserToken;
 import top.mxzero.security.exceptions.ServiceCode;
+import top.mxzero.security.exceptions.ServiceException;
 import top.mxzero.security.mapper.MemberMapper;
 import top.mxzero.security.mapper.UserTokenMapper;
 import top.mxzero.security.service.TokenService;
@@ -51,12 +52,12 @@ public class TokenServiceImpl implements TokenService {
 
         // 账号密码匹配
         if (member == null || !passwordEncoder.matches(dto.getPassword(), member.getPassword())) {
-            return new TokenResDTO<>(null, ServiceCode.PASSWORD_INVALID);
+            throw new ServiceException(ServiceCode.PASSWORD_INVALID);
         }
 
         // 账号被锁定
         if (member.getLocked() == 1) {
-            return new TokenResDTO<>(null, ServiceCode.ACCOUNT_LOCKED);
+            throw new ServiceException(ServiceCode.ACCOUNT_LOCKED);
         }
 
         // 用户需要二次认证
@@ -72,8 +73,10 @@ public class TokenServiceImpl implements TokenService {
 
             String towFaToken = UUID.randomUUID().toString();
             redisTemplate.opsForValue().set(String.format("account:%s:2fa", member.getId()), towFaToken, 10, TimeUnit.MINUTES);
-
-            return new TokenResDTO<>(Map.of("token", towFaToken, "items", map), ServiceCode.ACCOUNT_2FA);
+            TokenResDTO<?> tokenResDTO = new TokenResDTO<>();
+            tokenResDTO.setItems(map);
+            tokenResDTO.setTwoAuthToken(towFaToken);
+            return tokenResDTO;
         }
 
         // 判断用户是否在同一个设备类型上已经有登录信息
@@ -103,6 +106,8 @@ public class TokenServiceImpl implements TokenService {
         userToken.setDeviceFlag(dto.getDeviceFlag());
         tokenMapper.insert(userToken);
         memberMapper.updateLoginTimeByUsername(dto.getUsername(), current);
-        return new TokenResDTO<>(tokenStr, ServiceCode.SUCCESS);
+        TokenResDTO<String> tokenResDTO = new TokenResDTO<>();
+        tokenResDTO.setToken(tokenStr);
+        return tokenResDTO;
     }
 }

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="top.mxzero.security.mapper.UserTokenMapper">
+    <update id="updateExpiredTokensBatch">
+        UPDATE user_token
+        SET state = #{newState}
+        WHERE id IN (
+        SELECT id
+        FROM (
+            SELECT id
+            FROM user_token
+            WHERE state = #{currentState}
+            AND (last_access_at + INTERVAL '1 second' * expire) &lt; CURRENT_TIMESTAMP
+            ORDER BY last_access_at ASC
+            LIMIT 100
+            ) AS subquery
+        )
+    </update>
+
+</mapper>
