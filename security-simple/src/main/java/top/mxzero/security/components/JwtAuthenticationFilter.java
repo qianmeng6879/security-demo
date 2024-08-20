@@ -32,7 +32,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter implements App
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        boolean requireCleanSession = false;
         if (new MvcRequestMatcher(null, "/api/**").matches(request)) {
             String token = request.getHeader("Authorization");
             Authentication authentication = null;

@@ -2,8 +2,8 @@ package top.mxzero.security.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
-import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
@@ -14,7 +14,6 @@ import java.util.Date;
  * @since 2024/8/16
  */
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
 public class UserSession {
     @TableId(type = IdType.NONE)
@@ -24,7 +23,10 @@ public class UserSession {
     private Date lastAccessAt;
     private String deviceType;
     private String token;
+    private Long expire;
+    private String deviceFlag;
 
+    @Getter
     public enum DeviceType {
         WEB("web"), PHONE("phone");
         private final String value;

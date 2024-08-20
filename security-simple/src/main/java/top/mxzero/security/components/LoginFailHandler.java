@@ -5,11 +5,14 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
-import org.springframework.util.StringUtils;
+import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -22,8 +25,8 @@ import java.util.Map;
  * @since 2024/8/5
  */
 @Slf4j
-public class LoginFailHandler extends SimpleUrlAuthenticationFailureHandler {
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+public class LoginFailHandler extends SimpleUrlAuthenticationFailureHandler implements ApplicationContextAware {
+    private ObjectMapper objectMapper;
 
     public LoginFailHandler(String defaultFailureUrl) {
         super(defaultFailureUrl);
@@ -31,13 +34,12 @@ public class LoginFailHandler extends SimpleUrlAuthenticationFailureHandler {
 
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
-        String acceptType = request.getHeader("Accept");
-        if (StringUtils.hasLength(acceptType) && acceptType.startsWith(MediaType.APPLICATION_JSON_VALUE)) {
+        if (new MvcRequestMatcher(null, "/api/**").matches(request)) {
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
             response.setCharacterEncoding(StandardCharsets.UTF_8.name());
             PrintWriter writer = response.getWriter();
-            writer.print(OBJECT_MAPPER.writeValueAsString(
+            writer.print(objectMapper.writeValueAsString(
                     Map.of("message", exception.getMessage()
                     )
             ));
@@ -45,5 +47,10 @@ public class LoginFailHandler extends SimpleUrlAuthenticationFailureHandler {
         } else {
             super.onAuthenticationFailure(request, response, exception);
         }
+    }
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.objectMapper = applicationContext.getBean(ObjectMapper.class);
     }
 }

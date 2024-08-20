@@ -11,7 +11,7 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
-import org.springframework.util.StringUtils;
+import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
 import top.mxzero.security.entity.UserSession;
 import top.mxzero.security.mapper.UserSessionMapper;
 import top.mxzero.security.service.MemberService;
@@ -31,23 +31,27 @@ import java.util.UUID;
 @Slf4j
 public class LoginSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler implements ApplicationContextAware {
     private MemberService memberService;
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+    private ObjectMapper objectMapper;
     private UserSessionMapper sessionMapper;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws ServletException, IOException {
         Date currentTime = new Date();
         String token = null;
-        UserSession userSession = new UserSession(request.getSession().getId(), authentication.getName(), currentTime, currentTime, UserSession.DeviceType.WEB.value(), token);
-        String acceptType = request.getHeader("Accept");
-        if (StringUtils.hasLength(acceptType) && acceptType.startsWith(MediaType.APPLICATION_JSON_VALUE)) {
+        UserSession userSession = new UserSession();
+        userSession.setSessionId(request.getSession().getId());
+        userSession.setName(authentication.getName());
+        userSession.setCreatedAt(currentTime);
+        userSession.setLastAccessAt(currentTime);
+        userSession.setDeviceType(UserSession.DeviceType.WEB.value());
+        if (new MvcRequestMatcher(null, "/api/**").matches(request)) {
             PrintWriter writer = response.getWriter();
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
             response.setCharacterEncoding(StandardCharsets.UTF_8.name());
             token = UUID.randomUUID().toString().replaceAll("-", "");
             userSession.setDeviceType(UserSession.DeviceType.PHONE.value());
             userSession.setToken(token);
-            writer.print(OBJECT_MAPPER.writeValueAsString(
+            writer.print(objectMapper.writeValueAsString(
                     Map.of(
                             "session_id", request.getSession().getId(),
                             "token", token
@@ -66,5 +70,6 @@ public class LoginSuccessHandler extends SavedRequestAwareAuthenticationSuccessH
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.memberService = applicationContext.getBean(MemberService.class);
         this.sessionMapper = applicationContext.getBean(UserSessionMapper.class);
+        this.objectMapper = applicationContext.getBean(ObjectMapper.class);
     }
 }

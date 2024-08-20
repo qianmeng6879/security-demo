@@ -28,9 +28,11 @@ public class UserDetailsServiceImpl implements UserDetailsService, ApplicationCo
             throw new UsernameNotFoundException(String.format("用户名 %s 不存在", username));
         }
 
-        List<SimpleGrantedAuthority> authorityList = memberService.getRolesByMemberId(member.getId())
-                .stream().map(SimpleGrantedAuthority::new).toList();
-
+        List<SimpleGrantedAuthority> authorityList = new java.util.ArrayList<>(memberService.getRolesByMemberId(member.getId())
+                .stream().map(SimpleGrantedAuthority::new).toList());
+        if (member.getIsSuperuser() != 0) {
+            authorityList.add(new SimpleGrantedAuthority("ROLE_SUPERUSER"));
+        }
         return new User(username, member.getPassword(), authorityList);
     }
 

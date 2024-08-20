@@ -19,9 +19,13 @@ public class Member {
     private String username;
     private String password;
     private String nickname;
+    private String email;
+    private String phone;
     private String avatar;
     private Date LastLoginTime;
-
+    private Integer isSuperuser;
+    private Integer enable2fa;
+    private Integer locked;
     @TableField(fill = FieldFill.INSERT)
     private Date createTime;
     @TableField(fill = FieldFill.INSERT_UPDATE)
