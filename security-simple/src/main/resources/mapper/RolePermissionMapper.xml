@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="top.mxzero.security.mapper.RolePermissionMapper">
+    <insert id="insertBatch" parameterType="top.mxzero.security.entity.RolePermission">
+        INSERT INTO t_role_permission (id, role_id, permission_id)
+        VALUES
+
+        <foreach collection="rolePermissions" item="item" separator=",">
+            (#{item.id}, #{item.roleId}, #{item.permissionId})
+        </foreach>
+    </insert>
+
+</mapper>

@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import top.mxzero.security.dto.PageDTO;
+import top.mxzero.security.dto.UserDTO;
 import top.mxzero.security.dto.UserinfoDTO;
 import top.mxzero.security.entity.Member;
 import top.mxzero.security.entity.MemberRole;
@@ -17,6 +19,7 @@ import top.mxzero.security.mapper.MemberRoleMapper;
 import top.mxzero.security.mapper.RoleMapper;
 import top.mxzero.security.service.AuthorizeService;
 import top.mxzero.security.service.MemberService;
+import top.mxzero.security.utils.DeepBeanUtil;
 import top.mxzero.security.utils.EmailUtil;
 import top.mxzero.security.utils.PhoneUtil;
 
@@ -49,8 +52,19 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public List<Member> findPage(long currentPage, long pageSize) {
-        return memberMapper.selectPage(new Page<>(currentPage, pageSize), null).getRecords();
+    public PageDTO<UserDTO> findPage(long currentPage, long pageSize) {
+        Page<Member> page = memberMapper.selectPage(new Page<>(currentPage, pageSize), null);
+
+        List<UserDTO> userDTOS = DeepBeanUtil.copyProperties(page.getRecords(), UserDTO::new);
+
+        PageDTO<UserDTO> pageDTO = new PageDTO<>();
+        pageDTO.setRecords(userDTOS);
+        // 数据脱敏
+        pageDTO.getRecords().forEach(item -> {
+            item.setEmail(EmailUtil.maskEmail(item.getEmail()));
+            item.setPhone(PhoneUtil.maskPhoneNumber(item.getPhone()));
+        });
+        return pageDTO;
     }
 
     @Override

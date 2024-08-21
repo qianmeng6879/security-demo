@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 import top.mxzero.security.entity.Permission;
 
+import java.util.List;
+
 /**
  * @author Peng
  * @email qianmeng6879@163.com
@@ -11,4 +13,5 @@ import top.mxzero.security.entity.Permission;
  */
 @Mapper
 public interface PermissionMapper extends BaseMapper<Permission> {
+    List<Permission> findByRoleId(Long roleId);
 }

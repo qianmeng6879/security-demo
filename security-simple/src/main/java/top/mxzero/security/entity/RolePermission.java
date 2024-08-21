@@ -3,7 +3,9 @@ package top.mxzero.security.entity;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * @author Peng
@@ -12,9 +14,16 @@ import lombok.Data;
  */
 @Data
 @TableName("t_role_permission")
+@AllArgsConstructor
+@NoArgsConstructor
 public class RolePermission {
     @TableId(type = IdType.ASSIGN_ID)
     private Long id;
     private Long roleId;
     private Long permissionId;
+
+    public RolePermission(Long roleId, Long permissionId) {
+        this.roleId = roleId;
+        this.permissionId = permissionId;
+    }
 }

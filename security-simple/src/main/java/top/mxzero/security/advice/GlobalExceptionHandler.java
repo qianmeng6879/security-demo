@@ -2,6 +2,7 @@ package top.mxzero.security.advice;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -20,16 +21,18 @@ import java.util.Map;
 public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception.class)
-    public Map<String, Object> exceptionHandler(Exception e) {
+    public Map<String, Object> exceptionHandler(Exception e) throws Exception {
+        if (e instanceof AuthorizationDeniedException) {
+            throw e;
+        }
         log.error(e.getMessage());
-        log.error(e.getClass().getName());
-        return Map.of("error", "服务错误", "code", 999);
+        return Map.of("message", "服务错误", "code", 999);
     }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(NoHandlerFoundException.class)
     public Map<String, Object> exceptionHandler(NoHandlerFoundException e) {
-        return Map.of("error", "访问的资源不存在", "code", 999);
+        return Map.of("message", "访问的资源不存在", "code", 999);
     }
 
 
@@ -37,7 +40,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ServiceException.class)
     public Map<String, Object> handleServiceException(ServiceException e) {
         return Map.of(
-                "error", e.getMessage(),
+                "message", e.getMessage(),
                 "code", e.getCode()
         );
     }

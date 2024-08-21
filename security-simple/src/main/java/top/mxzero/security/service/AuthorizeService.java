@@ -1,7 +1,7 @@
 package top.mxzero.security.service;
 
+import top.mxzero.security.dto.RoleDTO;
 import top.mxzero.security.entity.Permission;
-import top.mxzero.security.entity.Role;
 
 import java.util.List;
 
@@ -30,7 +30,7 @@ public interface AuthorizeService {
     /**
      * 获取全部角色数据
      */
-    List<Role> getAllRole();
+    List<RoleDTO> getAllRole();
 
     /**
      * 获取全部权限数据
@@ -40,7 +40,11 @@ public interface AuthorizeService {
     /**
      * 保存角色信息
      */
-    boolean save(Role role);
+    boolean save(RoleDTO dto);
+
+    boolean removeRoleById(Long roleId);
+
+    boolean removePermissionById(Long permissionId);
 
     /**
      * 保存权限信息

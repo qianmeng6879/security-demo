@@ -10,14 +10,17 @@ import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 import top.mxzero.security.entity.UserToken;
 import top.mxzero.security.mapper.UserTokenMapper;
+import top.mxzero.security.service.AuthorizeService;
 
 import java.io.IOException;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.Date;
 
 /**
@@ -28,6 +31,8 @@ import java.util.Date;
 @Slf4j
 public class TokenAuthenticationFilter extends OncePerRequestFilter implements ApplicationContextAware {
     private UserTokenMapper tokenMapper;
+
+    private AuthorizeService authorizeService;
 
     private boolean validateToken(String token, HttpServletRequest request) {
         UserToken userToken = tokenMapper.selectOne(new QueryWrapper<UserToken>().eq("token", token).eq("state", UserToken.TokenState.NORMAL.getState()));
@@ -51,7 +56,18 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter implements A
 
         userToken.setLastAccessAt(current);
         tokenMapper.updateById(userToken);
-        SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(userToken.getUsername(), null, Collections.emptyList()));
+
+        ArrayList<GrantedAuthority> authorities = new ArrayList<>();
+
+        // 加载角色信息
+        authorizeService.roleNameByMemberId(userToken.getUserId())
+                .forEach(item -> authorities.add(new SimpleGrantedAuthority(item)));
+
+        // 加载权限信息
+        authorizeService.permissionNameByMember(userToken.getUserId())
+                .forEach(item -> authorities.add(new SimpleGrantedAuthority(item)));
+
+        SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(userToken.getUsername(), null, authorities));
         return true;
     }
 
@@ -70,5 +86,6 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter implements A
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.tokenMapper = applicationContext.getBean(UserTokenMapper.class);
+        this.authorizeService = applicationContext.getBean(AuthorizeService.class);
     }
 }
