@@ -1,5 +1,6 @@
 package top.mxzero.security.service;
 
+import top.mxzero.security.dto.UserinfoDTO;
 import top.mxzero.security.entity.Member;
 
 import java.util.List;
@@ -11,12 +12,9 @@ import java.util.List;
  */
 public interface MemberService {
     Member findByUsername(String username);
-
     List<Member> findPage(long currentPage, long pageSize);
-
     boolean save(Member member);
 
-    List<String> getRolesByMemberId(Long memberId);
-
     boolean updateLastLogin(String username);
+    UserinfoDTO getUserinfo(String username);
 }

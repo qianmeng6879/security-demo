@@ -9,8 +9,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import top.mxzero.security.entity.Member;
+import top.mxzero.security.service.AuthorizeService;
 import top.mxzero.security.service.MemberService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -19,7 +21,9 @@ import java.util.List;
  * @since 2024/7/30
  */
 public class UserDetailsServiceImpl implements UserDetailsService, ApplicationContextAware {
+    public static final String SUPERUSER_ROLE_NAME = "ROLE_SUPERUSER";
     private MemberService memberService;
+    private AuthorizeService authorizeService;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -28,10 +32,14 @@ public class UserDetailsServiceImpl implements UserDetailsService, ApplicationCo
             throw new UsernameNotFoundException(String.format("用户名 %s 不存在", username));
         }
 
-        List<SimpleGrantedAuthority> authorityList = new java.util.ArrayList<>(memberService.getRolesByMemberId(member.getId())
+        List<SimpleGrantedAuthority> authorityList = new ArrayList<>(authorizeService.roleNameByMemberId(member.getId())
                 .stream().map(SimpleGrantedAuthority::new).toList());
+
+        authorizeService.permissionNameByMember(member.getId())
+                .forEach(permission -> authorityList.add(new SimpleGrantedAuthority(permission)));
+
         if (member.getIsSuperuser() != 0) {
-            authorityList.add(new SimpleGrantedAuthority("ROLE_SUPERUSER"));
+            authorityList.add(new SimpleGrantedAuthority(SUPERUSER_ROLE_NAME));
         }
         return new User(username, member.getPassword(), authorityList);
     }
@@ -39,5 +47,6 @@ public class UserDetailsServiceImpl implements UserDetailsService, ApplicationCo
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.memberService = applicationContext.getBean(MemberService.class);
+        this.authorizeService = applicationContext.getBean(AuthorizeService.class);
     }
 }

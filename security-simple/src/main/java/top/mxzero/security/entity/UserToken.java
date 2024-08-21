@@ -2,6 +2,7 @@ package top.mxzero.security.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -16,11 +17,15 @@ import java.util.Date;
 @Data
 public class UserToken {
     @TableId(type = IdType.ASSIGN_ID)
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Long id;
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Long userId;
     private String username;
     private String token;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date createdAt;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date lastAccessAt;
     private String deviceType;
     private Long expire;

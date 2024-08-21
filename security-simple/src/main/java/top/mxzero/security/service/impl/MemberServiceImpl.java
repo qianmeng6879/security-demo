@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import top.mxzero.security.dto.UserinfoDTO;
 import top.mxzero.security.entity.Member;
 import top.mxzero.security.entity.MemberRole;
 import top.mxzero.security.entity.Role;
@@ -14,9 +15,11 @@ import top.mxzero.security.exceptions.ServiceException;
 import top.mxzero.security.mapper.MemberMapper;
 import top.mxzero.security.mapper.MemberRoleMapper;
 import top.mxzero.security.mapper.RoleMapper;
+import top.mxzero.security.service.AuthorizeService;
 import top.mxzero.security.service.MemberService;
+import top.mxzero.security.utils.EmailUtil;
+import top.mxzero.security.utils.PhoneUtil;
 
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -36,6 +39,9 @@ public class MemberServiceImpl implements MemberService {
     private RoleMapper roleMapper;
     @Autowired
     private MemberRoleMapper memberRoleMapper;
+
+    @Autowired
+    private AuthorizeService authorizeService;
 
     @Override
     public Member findByUsername(String username) {
@@ -70,16 +76,24 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public List<String> getRolesByMemberId(Long memberId) {
-        List<Long> roleIds = memberRoleMapper.selectList(new QueryWrapper<MemberRole>().eq("member_id", memberId).select("role_id")).stream().map(MemberRole::getRoleId).toList();
-        if (roleIds.isEmpty()) {
-            return Collections.emptyList();
-        }
-        return roleMapper.selectList(new QueryWrapper<Role>().in("id", roleIds).select("name")).stream().map(Role::getName).toList();
+    @Transactional
+    public boolean updateLastLogin(String username) {
+        return memberMapper.updateLoginTimeByUsername(username, new Date()) > 10;
     }
 
     @Override
-    public boolean updateLastLogin(String username) {
-        return memberMapper.updateLoginTimeByUsername(username, new Date()) > 10;
+    public UserinfoDTO getUserinfo(String username) {
+        Member member = memberMapper.selectOne(new QueryWrapper<Member>().eq("username", username));
+        if (member == null) {
+            return null;
+        }
+
+        return UserinfoDTO.builder()
+                .id(member.getId())
+                .username(member.getUsername())
+                .avatar(member.getAvatar())
+                .phone(PhoneUtil.maskPhoneNumber(member.getPhone()))
+                .email(EmailUtil.maskEmail(member.getEmail()))
+                .build();
     }
 }

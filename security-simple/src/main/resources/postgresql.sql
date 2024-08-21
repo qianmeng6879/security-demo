@@ -12,7 +12,7 @@
  Target Server Version : 150007
  File Encoding         : 65001
 
- Date: 21/08/2024 09:24:41
+ Date: 21/08/2024 11:11:59
 */
 
 
@@ -52,8 +52,8 @@ CREATE TABLE "public"."t_member" (
 -- ----------------------------
 -- Records of t_member
 -- ----------------------------
-INSERT INTO "public"."t_member" VALUES (1818563452052160514, 'zero', '$2a$10$pC37xr2.RMfe1ZgKbAAZoOoedzBDeV/rhTfkutkQt77vNpxRZcZ2W', '2024-07-31 16:24:48.906', NULL, 0, 'zero', NULL, '2024-08-21 00:23:23.391', 0, NULL, NULL, 0, 0);
-INSERT INTO "public"."t_member" VALUES (1818569534283698177, 'admin', '$2a$10$pC37xr2.RMfe1ZgKbAAZoOoedzBDeV/rhTfkutkQt77vNpxRZcZ2W', '2024-07-31 16:48:59.023', NULL, 0, 'admin', NULL, '2024-08-20 11:33:50.539', 0, NULL, 'qianmeng6879@163.com', 1, 0);
+INSERT INTO "public"."t_member" VALUES (1818563452052160514, 'zero', '$2a$10$pC37xr2.RMfe1ZgKbAAZoOoedzBDeV/rhTfkutkQt77vNpxRZcZ2W', '2024-07-31 16:24:48.906', NULL, 0, 'zero', NULL, '2024-08-21 10:44:39.32', 0, NULL, NULL, 0, 0);
+INSERT INTO "public"."t_member" VALUES (1818569534283698177, 'admin', '$2a$10$pC37xr2.RMfe1ZgKbAAZoOoedzBDeV/rhTfkutkQt77vNpxRZcZ2W', '2024-07-31 16:48:59.023', NULL, 0, 'admin', NULL, '2024-08-21 10:52:38.01', 0, NULL, 'qianmeng6879@163.com', 1, 0);
 
 -- ----------------------------
 -- Table structure for t_member_role
@@ -69,9 +69,48 @@ CREATE TABLE "public"."t_member_role" (
 -- ----------------------------
 -- Records of t_member_role
 -- ----------------------------
-INSERT INTO "public"."t_member_role" VALUES (1818563452157018114, 1818563452052160514, 1818563452157018113);
-INSERT INTO "public"."t_member_role" VALUES (1818569534329835521, 1818569534283698177, 1818563452157018113);
 INSERT INTO "public"."t_member_role" VALUES (1, 1818569534283698177, 1);
+INSERT INTO "public"."t_member_role" VALUES (1818563452157018114, 1818563452052160514, 2);
+INSERT INTO "public"."t_member_role" VALUES (1818569534329835521, 1818569534283698177, 2);
+
+-- ----------------------------
+-- Table structure for t_permission
+-- ----------------------------
+DROP TABLE IF EXISTS "public"."t_permission";
+CREATE TABLE "public"."t_permission" (
+  "id" int8 NOT NULL,
+  "name" varchar(255) COLLATE "pg_catalog"."default"
+)
+;
+
+-- ----------------------------
+-- Records of t_permission
+-- ----------------------------
+INSERT INTO "public"."t_permission" VALUES (1, 'user:add');
+INSERT INTO "public"."t_permission" VALUES (2, 'user:remove');
+INSERT INTO "public"."t_permission" VALUES (3, 'user:edit');
+INSERT INTO "public"."t_permission" VALUES (4, 'user:view');
+INSERT INTO "public"."t_permission" VALUES (5, 'user:list');
+INSERT INTO "public"."t_permission" VALUES (6, 'role:add');
+INSERT INTO "public"."t_permission" VALUES (7, 'role:remove');
+INSERT INTO "public"."t_permission" VALUES (8, 'role:edit');
+INSERT INTO "public"."t_permission" VALUES (9, 'role:view');
+INSERT INTO "public"."t_permission" VALUES (10, 'role:list');
+INSERT INTO "public"."t_permission" VALUES (11, 'permission:add');
+INSERT INTO "public"."t_permission" VALUES (12, 'permission:remove');
+INSERT INTO "public"."t_permission" VALUES (13, 'permission:edit');
+INSERT INTO "public"."t_permission" VALUES (14, 'permission:view');
+INSERT INTO "public"."t_permission" VALUES (15, 'permission:list');
+INSERT INTO "public"."t_permission" VALUES (16, 'device_template:add');
+INSERT INTO "public"."t_permission" VALUES (17, 'device_template:remove');
+INSERT INTO "public"."t_permission" VALUES (18, 'device_template:edit');
+INSERT INTO "public"."t_permission" VALUES (19, 'device_template:view');
+INSERT INTO "public"."t_permission" VALUES (20, 'device_template:list');
+INSERT INTO "public"."t_permission" VALUES (21, 'device:add');
+INSERT INTO "public"."t_permission" VALUES (22, 'device:remove');
+INSERT INTO "public"."t_permission" VALUES (23, 'device:edit');
+INSERT INTO "public"."t_permission" VALUES (24, 'device:view');
+INSERT INTO "public"."t_permission" VALUES (25, 'device:list');
 
 -- ----------------------------
 -- Table structure for t_role
@@ -86,8 +125,58 @@ CREATE TABLE "public"."t_role" (
 -- ----------------------------
 -- Records of t_role
 -- ----------------------------
-INSERT INTO "public"."t_role" VALUES (1818563452157018113, 'ROLE_USER');
 INSERT INTO "public"."t_role" VALUES (1, 'ROLE_ADMIN');
+INSERT INTO "public"."t_role" VALUES (2, 'ROLE_USER');
+
+-- ----------------------------
+-- Table structure for t_role_permission
+-- ----------------------------
+DROP TABLE IF EXISTS "public"."t_role_permission";
+CREATE TABLE "public"."t_role_permission" (
+  "id" int8 NOT NULL,
+  "role_id" int8,
+  "permission_id" int8
+)
+;
+
+-- ----------------------------
+-- Records of t_role_permission
+-- ----------------------------
+INSERT INTO "public"."t_role_permission" VALUES (1, 1, 1);
+INSERT INTO "public"."t_role_permission" VALUES (2, 1, 2);
+INSERT INTO "public"."t_role_permission" VALUES (3, 1, 3);
+INSERT INTO "public"."t_role_permission" VALUES (4, 1, 4);
+INSERT INTO "public"."t_role_permission" VALUES (5, 1, 5);
+INSERT INTO "public"."t_role_permission" VALUES (6, 1, 6);
+INSERT INTO "public"."t_role_permission" VALUES (7, 1, 7);
+INSERT INTO "public"."t_role_permission" VALUES (8, 1, 8);
+INSERT INTO "public"."t_role_permission" VALUES (9, 1, 9);
+INSERT INTO "public"."t_role_permission" VALUES (10, 1, 10);
+INSERT INTO "public"."t_role_permission" VALUES (11, 1, 11);
+INSERT INTO "public"."t_role_permission" VALUES (12, 1, 12);
+INSERT INTO "public"."t_role_permission" VALUES (13, 1, 13);
+INSERT INTO "public"."t_role_permission" VALUES (14, 1, 14);
+INSERT INTO "public"."t_role_permission" VALUES (15, 1, 15);
+INSERT INTO "public"."t_role_permission" VALUES (16, 1, 16);
+INSERT INTO "public"."t_role_permission" VALUES (17, 1, 17);
+INSERT INTO "public"."t_role_permission" VALUES (18, 1, 18);
+INSERT INTO "public"."t_role_permission" VALUES (19, 1, 19);
+INSERT INTO "public"."t_role_permission" VALUES (20, 1, 20);
+INSERT INTO "public"."t_role_permission" VALUES (21, 1, 21);
+INSERT INTO "public"."t_role_permission" VALUES (22, 1, 22);
+INSERT INTO "public"."t_role_permission" VALUES (23, 1, 23);
+INSERT INTO "public"."t_role_permission" VALUES (24, 1, 24);
+INSERT INTO "public"."t_role_permission" VALUES (25, 1, 25);
+INSERT INTO "public"."t_role_permission" VALUES (26, 2, 16);
+INSERT INTO "public"."t_role_permission" VALUES (27, 2, 17);
+INSERT INTO "public"."t_role_permission" VALUES (28, 2, 18);
+INSERT INTO "public"."t_role_permission" VALUES (29, 2, 19);
+INSERT INTO "public"."t_role_permission" VALUES (30, 2, 20);
+INSERT INTO "public"."t_role_permission" VALUES (31, 2, 21);
+INSERT INTO "public"."t_role_permission" VALUES (32, 2, 22);
+INSERT INTO "public"."t_role_permission" VALUES (33, 2, 23);
+INSERT INTO "public"."t_role_permission" VALUES (34, 2, 24);
+INSERT INTO "public"."t_role_permission" VALUES (35, 2, 25);
 
 -- ----------------------------
 -- Table structure for user_session
@@ -110,6 +199,7 @@ CREATE TABLE "public"."user_session" (
 -- ----------------------------
 INSERT INTO "public"."user_session" VALUES ('529ed8d6-e792-49be-bb15-46cd439c974b', 'zero', '2024-08-20 11:33:29.401', '2024-08-20 11:33:29.401', 'web', NULL, NULL, NULL);
 INSERT INTO "public"."user_session" VALUES ('03fa8a64-ba4c-4467-a4e1-3b9370cdd009', 'admin', '2024-08-20 11:33:50.368', '2024-08-20 11:33:50.368', 'web', NULL, NULL, NULL);
+INSERT INTO "public"."user_session" VALUES ('54d32b19-5ee7-452b-8688-b3e509d0e309', 'admin', '2024-08-21 10:52:37.802', '2024-08-21 10:52:37.802', 'web', NULL, NULL, NULL);
 
 -- ----------------------------
 -- Table structure for user_token
@@ -153,7 +243,8 @@ INSERT INTO "public"."user_token" VALUES ('2024-08-21 00:21:48.459', '2024-08-21
 INSERT INTO "public"."user_token" VALUES ('2024-08-21 00:22:20.497', '2024-08-21 00:22:20.539', 'web', '49a52bab12714763b83ca85cf753cf1a', 7200, '-1809620334', 1825931382843031554, 2, 1818563452052160514, 'zero');
 INSERT INTO "public"."user_token" VALUES ('2024-08-21 00:22:27.227', '2024-08-21 00:22:27.267', 'web', 'fb1ae8ae8e2a453ca3a9636f821831d5', 7200, '-1809620334', 1825931411037143041, 2, 1818563452052160514, 'zero');
 INSERT INTO "public"."user_token" VALUES ('2024-08-20 11:21:10.877', '2024-08-20 11:21:49.34', 'phone', '8af2fb8abd9a4aaf83375c45e682bbf4', 7200, '123', 1825734797446103042, 0, 1818569534283698177, 'admin');
-INSERT INTO "public"."user_token" VALUES ('2024-08-21 00:23:23.391', '2024-08-21 00:23:23.423', 'web', 'de69b28af69e4274b6bb57291c592b0a', 7200, '-1809620334', 1825931646618615810, 1, 1818563452052160514, 'zero');
+INSERT INTO "public"."user_token" VALUES ('2024-08-21 00:23:23.391', '2024-08-21 00:23:23.423', 'web', 'de69b28af69e4274b6bb57291c592b0a', 7200, '-1809620334', 1825931646618615810, 3, 1818563452052160514, 'zero');
+INSERT INTO "public"."user_token" VALUES ('2024-08-21 10:44:39.32', '2024-08-21 11:09:21.523', 'phone', '66ae16bbfba241f1acb9bb3f9d78abcc', 7200, '123', 1826087993259606017, 1, 1818563452052160514, 'zero');
 
 -- ----------------------------
 -- Alter sequences owned by
@@ -171,9 +262,19 @@ ALTER TABLE "public"."t_member" ADD CONSTRAINT "t_member_pkey" PRIMARY KEY ("id"
 ALTER TABLE "public"."t_member_role" ADD CONSTRAINT "member_role_pkey" PRIMARY KEY ("id");
 
 -- ----------------------------
+-- Primary Key structure for table t_permission
+-- ----------------------------
+ALTER TABLE "public"."t_permission" ADD CONSTRAINT "t_permission_pkey" PRIMARY KEY ("id");
+
+-- ----------------------------
 -- Primary Key structure for table t_role
 -- ----------------------------
 ALTER TABLE "public"."t_role" ADD CONSTRAINT "t_role_pkey" PRIMARY KEY ("id");
+
+-- ----------------------------
+-- Primary Key structure for table t_role_permission
+-- ----------------------------
+ALTER TABLE "public"."t_role_permission" ADD CONSTRAINT "t_role_permission_pkey" PRIMARY KEY ("id");
 
 -- ----------------------------
 -- Primary Key structure for table user_session
