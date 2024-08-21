@@ -12,7 +12,7 @@
  Target Server Version : 150007
  File Encoding         : 65001
 
- Date: 20/08/2024 11:35:00
+ Date: 21/08/2024 09:24:41
 */
 
 
@@ -52,7 +52,7 @@ CREATE TABLE "public"."t_member" (
 -- ----------------------------
 -- Records of t_member
 -- ----------------------------
-INSERT INTO "public"."t_member" VALUES (1818563452052160514, 'zero', '$2a$10$pC37xr2.RMfe1ZgKbAAZoOoedzBDeV/rhTfkutkQt77vNpxRZcZ2W', '2024-07-31 16:24:48.906', NULL, 0, 'zero', NULL, '2024-08-20 11:33:29.575', 0, NULL, NULL, 0, 0);
+INSERT INTO "public"."t_member" VALUES (1818563452052160514, 'zero', '$2a$10$pC37xr2.RMfe1ZgKbAAZoOoedzBDeV/rhTfkutkQt77vNpxRZcZ2W', '2024-07-31 16:24:48.906', NULL, 0, 'zero', NULL, '2024-08-21 00:23:23.391', 0, NULL, NULL, 0, 0);
 INSERT INTO "public"."t_member" VALUES (1818569534283698177, 'admin', '$2a$10$pC37xr2.RMfe1ZgKbAAZoOoedzBDeV/rhTfkutkQt77vNpxRZcZ2W', '2024-07-31 16:48:59.023', NULL, 0, 'admin', NULL, '2024-08-20 11:33:50.539', 0, NULL, 'qianmeng6879@163.com', 1, 0);
 
 -- ----------------------------
@@ -132,11 +132,28 @@ CREATE TABLE "public"."user_token" (
 -- ----------------------------
 -- Records of user_token
 -- ----------------------------
+INSERT INTO "public"."user_token" VALUES ('2024-08-20 11:22:20.013', '2024-08-20 11:22:29.241', 'phone', 'b31a0928c3ea4ab5a7f119733b6d4265', 7200, '123', 1825735087356395521, 3, 1818569534283698177, 'admin');
+INSERT INTO "public"."user_token" VALUES ('2024-08-20 11:22:14.617', '2024-08-20 11:22:18.267', 'phone', '7adf318d7b124dd8a36bf436dc1eeb0a', 7200, '123', 1825735064770068481, 3, 1818569534283698177, 'admin');
+INSERT INTO "public"."user_token" VALUES ('2024-08-20 23:08:33.073', NULL, 'web', 'cd833aa1d18842f9b83a3b49cd1f3444', 7200, '-1809620334', 1825912813015035906, 2, 1818563452052160514, 'zero');
+INSERT INTO "public"."user_token" VALUES ('2024-08-20 23:19:25.297', NULL, 'web', 'f9bf67f6b9014b45a04c468315d66aa5', 7200, '-1809620334', 1825915548540121090, 2, 1818563452052160514, 'zero');
+INSERT INTO "public"."user_token" VALUES ('2024-08-20 23:19:43.583', NULL, 'web', 'a90fcfcef6a340da844e9c460f1b94e0', 7200, '-1809620334', 1825915625216192514, 2, 1818563452052160514, 'zero');
+INSERT INTO "public"."user_token" VALUES ('2024-08-20 23:29:01.676', NULL, 'web', '124b2ce0930a4a75b8b3b93464bad7f7', 7200, '-1809620334', 1825917966061420545, 2, 1818563452052160514, 'zero');
+INSERT INTO "public"."user_token" VALUES ('2024-08-20 23:29:32.035', NULL, 'web', '1300ab154c6a4e25bf23cd3d9e6f3e98', 7200, '-1809620334', 1825918093337575425, 2, 1818563452052160514, 'zero');
+INSERT INTO "public"."user_token" VALUES ('2024-08-20 23:30:03.652', NULL, 'web', '4a01419e01844c5a9096c5f4a3751185', 7200, '-1809620334', 1825918225974050818, 2, 1818563452052160514, 'zero');
+INSERT INTO "public"."user_token" VALUES ('2024-08-20 23:33:37.942', NULL, 'web', 'c8e35849bc1645cdb919a5c5719a89b6', 7200, '-1809620334', 1825919124784037889, 2, 1818563452052160514, 'zero');
+INSERT INTO "public"."user_token" VALUES ('2024-08-20 23:35:58.576', NULL, 'web', '83f4b479fafb4ae8bb93d39135000ef7', 7200, '-1809620334', 1825919714675195905, 2, 1818563452052160514, 'zero');
+INSERT INTO "public"."user_token" VALUES ('2024-08-21 00:09:16.369', '2024-08-21 00:09:16.429', 'web', '9ac057680b6741ec8ebfea5609c3ffe5', 7200, '-1809620334', 1825928094026350593, 2, 1818563452052160514, 'zero');
+INSERT INTO "public"."user_token" VALUES ('2024-08-21 00:09:27.042', '2024-08-21 00:09:27.081', 'web', '6dc7347947c7489b8bf2fbe973301c39', 7200, '-1809620334', 1825928138716659714, 2, 1818563452052160514, 'zero');
 INSERT INTO "public"."user_token" VALUES ('2024-08-20 11:15:44.196', NULL, 'phone', 'dc865dd09c814f41b969cd8ec4590518', 7200, '123', 1825733427267682305, 3, 1818569534283698177, 'admin');
 INSERT INTO "public"."user_token" VALUES ('2024-08-20 11:18:09.702', NULL, 'phone', 'd2484c404dd040dc93e7d383c7942397', 7200, '123', 1825734037564100609, 3, 1818569534283698177, 'admin');
+INSERT INTO "public"."user_token" VALUES ('2024-08-21 00:11:35.434', '2024-08-21 00:11:35.471', 'web', '2fc5f2e1842b4336a7b60429de382da3', 7200, '-1809620334', 1825928677219155970, 2, 1818563452052160514, 'zero');
+INSERT INTO "public"."user_token" VALUES ('2024-08-21 00:16:44.507', '2024-08-21 00:16:44.522', 'web', '6efb43d305644ce6b1c83c55094904b3', 7200, '-1809620334', 1825929973619802114, 2, 1818563452052160514, 'zero');
+INSERT INTO "public"."user_token" VALUES ('2024-08-21 00:16:56.686', '2024-08-21 00:16:56.722', 'web', '2f6642d5c3f24d7abc137244c36768a4', 7200, '-1809620334', 1825930024668676097, 2, 1818563452052160514, 'zero');
+INSERT INTO "public"."user_token" VALUES ('2024-08-21 00:21:48.459', '2024-08-21 00:21:48.479', 'web', '83ba0eb009634bc48817d8e6e3d9e19f', 7200, '-1809620334', 1825931248482697218, 2, 1818563452052160514, 'zero');
+INSERT INTO "public"."user_token" VALUES ('2024-08-21 00:22:20.497', '2024-08-21 00:22:20.539', 'web', '49a52bab12714763b83ca85cf753cf1a', 7200, '-1809620334', 1825931382843031554, 2, 1818563452052160514, 'zero');
+INSERT INTO "public"."user_token" VALUES ('2024-08-21 00:22:27.227', '2024-08-21 00:22:27.267', 'web', 'fb1ae8ae8e2a453ca3a9636f821831d5', 7200, '-1809620334', 1825931411037143041, 2, 1818563452052160514, 'zero');
 INSERT INTO "public"."user_token" VALUES ('2024-08-20 11:21:10.877', '2024-08-20 11:21:49.34', 'phone', '8af2fb8abd9a4aaf83375c45e682bbf4', 7200, '123', 1825734797446103042, 0, 1818569534283698177, 'admin');
-INSERT INTO "public"."user_token" VALUES ('2024-08-20 11:22:14.617', '2024-08-20 11:22:18.267', 'phone', '7adf318d7b124dd8a36bf436dc1eeb0a', 7200, '123', 1825735064770068481, 2, 1818569534283698177, 'admin');
-INSERT INTO "public"."user_token" VALUES ('2024-08-20 11:22:20.013', '2024-08-20 11:22:29.241', 'phone', 'b31a0928c3ea4ab5a7f119733b6d4265', 7200, '123', 1825735087356395521, 1, 1818569534283698177, 'admin');
+INSERT INTO "public"."user_token" VALUES ('2024-08-21 00:23:23.391', '2024-08-21 00:23:23.423', 'web', 'de69b28af69e4274b6bb57291c592b0a', 7200, '-1809620334', 1825931646618615810, 1, 1818563452052160514, 'zero');
 
 -- ----------------------------
 -- Alter sequences owned by
@@ -162,6 +179,16 @@ ALTER TABLE "public"."t_role" ADD CONSTRAINT "t_role_pkey" PRIMARY KEY ("id");
 -- Primary Key structure for table user_session
 -- ----------------------------
 ALTER TABLE "public"."user_session" ADD CONSTRAINT "user_session_pkey" PRIMARY KEY ("session_id");
+
+-- ----------------------------
+-- Indexes structure for table user_token
+-- ----------------------------
+CREATE INDEX "last_access_at_idx" ON "public"."user_token" USING btree (
+  "last_access_at" "pg_catalog"."timestamp_ops" ASC NULLS LAST
+);
+CREATE INDEX "token_idx" ON "public"."user_token" USING btree (
+  "token" COLLATE "pg_catalog"."default" "pg_catalog"."text_ops" ASC NULLS LAST
+);
 
 -- ----------------------------
 -- Primary Key structure for table user_token
