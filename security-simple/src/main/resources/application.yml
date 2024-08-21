@@ -6,8 +6,4 @@ spring:
     static-path-pattern: /static/**
   thymeleaf:
     cache: false
-  datasource:
-    driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/security_db
-    username: postgres
-    password: postgres
+
