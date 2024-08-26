@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import top.mxzero.security.controller.params.ChangePasswordParam;
 import top.mxzero.security.dto.PageDTO;
 import top.mxzero.security.dto.UserDTO;
 import top.mxzero.security.dto.UserinfoDTO;
@@ -109,5 +110,23 @@ public class MemberServiceImpl implements MemberService {
                 .phone(PhoneUtil.maskPhoneNumber(member.getPhone()))
                 .email(EmailUtil.maskEmail(member.getEmail()))
                 .build();
+    }
+
+    @Override
+    @Transactional
+    public boolean changePassword(String username, ChangePasswordParam param) {
+        Member member = this.memberMapper.selectOne(new QueryWrapper<Member>().eq("username", username));
+        if (member == null) {
+            return false;
+        }
+
+        if (!passwordEncoder.matches(param.getOldPwd(), member.getPassword())) {
+            throw new ServiceException("原密码错误");
+        }
+
+        Member updateMember = new Member();
+        updateMember.setId(member.getId());
+        updateMember.setPassword(passwordEncoder.encode(param.getConfirmPwd()));
+        return memberMapper.updateById(updateMember) > 0;
     }
 }
