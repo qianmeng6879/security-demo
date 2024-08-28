@@ -1,6 +1,7 @@
 package top.mxzero.security.service;
 
 import top.mxzero.security.controller.params.ChangePasswordParam;
+import top.mxzero.security.controller.params.PageAndSearch;
 import top.mxzero.security.dto.PageDTO;
 import top.mxzero.security.dto.UserDTO;
 import top.mxzero.security.dto.UserinfoDTO;
@@ -15,6 +16,8 @@ public interface MemberService {
     Member findByUsername(String username);
 
     PageDTO<UserDTO> findPage(long currentPage, long pageSize);
+
+    PageDTO<UserDTO> findPage(PageAndSearch param);
 
     boolean save(Member member);
 

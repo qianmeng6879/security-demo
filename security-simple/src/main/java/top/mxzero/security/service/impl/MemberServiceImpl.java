@@ -7,7 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import top.mxzero.security.controller.params.ChangePasswordParam;
+import top.mxzero.security.controller.params.PageAndSearch;
 import top.mxzero.security.dto.PageDTO;
 import top.mxzero.security.dto.UserDTO;
 import top.mxzero.security.dto.UserinfoDTO;
@@ -57,9 +59,30 @@ public class MemberServiceImpl implements MemberService {
         Page<Member> page = memberMapper.selectPage(new Page<>(currentPage, pageSize), null);
 
         List<UserDTO> userDTOS = DeepBeanUtil.copyProperties(page.getRecords(), UserDTO::new);
+        PageDTO<UserDTO> pageDTO = new PageDTO<>(userDTOS, page.getTotal(), pageSize, currentPage);
+        // 数据脱敏
+        pageDTO.getRecords().forEach(item -> {
+            item.setEmail(EmailUtil.maskEmail(item.getEmail()));
+            item.setPhone(PhoneUtil.maskPhoneNumber(item.getPhone()));
+        });
+        return pageDTO;
+    }
 
-        PageDTO<UserDTO> pageDTO = new PageDTO<>();
-        pageDTO.setRecords(userDTOS);
+    @Override
+    public PageDTO<UserDTO> findPage(PageAndSearch param) {
+        QueryWrapper<Member> queryWrapper = new QueryWrapper<>();
+        queryWrapper.orderByDesc("id");
+        if (StringUtils.hasLength(param.getSearch())) {
+            queryWrapper.like("username", param.getSearch())
+                    .or().like("email", param.getSearch())
+                    .or().like("phone", param.getSearch());
+        }
+
+        Page<Member> page = memberMapper.selectPage(new Page<>(param.getPage(), param.getSize()), queryWrapper);
+
+        List<UserDTO> userDTOS = DeepBeanUtil.copyProperties(page.getRecords(), UserDTO::new);
+
+        PageDTO<UserDTO> pageDTO = new PageDTO<>(userDTOS, page.getTotal(), param.getSize(), param.getPage());
         // 数据脱敏
         pageDTO.getRecords().forEach(item -> {
             item.setEmail(EmailUtil.maskEmail(item.getEmail()));
@@ -71,7 +94,12 @@ public class MemberServiceImpl implements MemberService {
     @Override
     @Transactional
     public boolean save(Member member) {
-        if (memberMapper.exists(new QueryWrapper<Member>().eq("username", member.getUsername()))) {
+        if (member.getId() != null) {
+            // 更新操作
+            return memberMapper.updateById(member) > 0;
+        }
+
+        if (member.getUsername() != null && memberMapper.exists(new QueryWrapper<Member>().eq("username", member.getUsername()))) {
             throw new ServiceException("用户名已存在");
         }
         member.setNickname(member.getUsername());

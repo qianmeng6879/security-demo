@@ -23,11 +23,12 @@ public class PageDTO<T> {
         this.currentPage = currentPage;
         this.totalCount = totalCount;
         this.records = records;
+        this.total(totalCount, pageSize);
+    }
 
-        if (totalCount % pageSize == 0) {
-            this.totalPage = totalCount / pageSize;
-        } else {
-            this.totalPage = totalCount / pageSize + 1;
-        }
+
+    public void total(long totalCount, long pageSize) {
+        this.totalCount = totalCount;
+        this.totalPage = totalCount % pageSize == 0 ? totalCount / pageSize : totalCount / pageSize + 1;
     }
 }

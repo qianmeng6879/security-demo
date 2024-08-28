@@ -1,8 +1,11 @@
 package top.mxzero.security.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import top.mxzero.security.config.MinioConfig;
 
 /**
  * @author Peng
@@ -11,6 +14,8 @@ import lombok.Data;
  */
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class UserinfoDTO {
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Long id;
@@ -18,4 +23,13 @@ public class UserinfoDTO {
     private String email;
     private String phone;
     private String avatar;
+
+    public String getAvatarUrl() {
+        if (this.avatar != null) {
+            if (!this.avatar.startsWith("http")) {
+                return MinioConfig.OSS_RESOURCE_PREFIX + this.avatar;
+            }
+        }
+        return this.avatar;
+    }
 }

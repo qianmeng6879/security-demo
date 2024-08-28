@@ -19,6 +19,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <mybatis.plus.version>3.5.7</mybatis.plus.version>
         <hutool.version>5.8.29</hutool.version>
+        <minio.version>8.5.12</minio.version>
     </properties>
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -49,6 +50,11 @@
                 <groupId>cn.hutool</groupId>
                 <artifactId>hutool-captcha</artifactId>
                 <version>${hutool.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.minio</groupId>
+                <artifactId>minio</artifactId>
+                <version>${minio.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

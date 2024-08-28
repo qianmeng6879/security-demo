@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -34,6 +35,12 @@ public class GlobalExceptionHandler {
         log.error(e.getMessage());
         e.printStackTrace();
         return RestData.error("系统错误");
+    }
+
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ExceptionHandler(AuthorizationDeniedException.class)
+    public RestData<?> handleAuthorizationDeniedException(AuthorizationDeniedException e) {
+        return RestData.error("用户未登录");
     }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
