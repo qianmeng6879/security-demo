@@ -50,6 +50,11 @@ public class MemberServiceImpl implements MemberService {
     private AuthorizeService authorizeService;
 
     @Override
+    public Long getUserIdByUsername(String username) {
+        return null;
+    }
+
+    @Override
     public Member findByUsername(String username) {
         return memberMapper.selectOne(new QueryWrapper<Member>().eq("username", username));
     }

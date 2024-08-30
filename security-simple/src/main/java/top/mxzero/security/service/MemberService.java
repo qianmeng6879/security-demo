@@ -13,6 +13,8 @@ import top.mxzero.security.entity.Member;
  * @since 2024/7/30
  */
 public interface MemberService {
+    Long getUserIdByUsername(String username);
+
     Member findByUsername(String username);
 
     PageDTO<UserDTO> findPage(long currentPage, long pageSize);
