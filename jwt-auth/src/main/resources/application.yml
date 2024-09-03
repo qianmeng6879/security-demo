@@ -1,0 +1,7 @@
+mxzero:
+  security:
+    jwt:
+      issuer: auth.mxzero.top
+      secret: 3213421232
+      expire: 7200
+      refresh: 86400
