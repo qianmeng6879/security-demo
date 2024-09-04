@@ -12,6 +12,7 @@
         <module>security-simple</module>
         <module>oauth2-server</module>
         <module>jwt-auth</module>
+        <module>websocket-security</module>
     </modules>
 
     <properties>
