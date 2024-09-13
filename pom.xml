@@ -13,6 +13,8 @@
         <module>oauth2-server</module>
         <module>jwt-auth</module>
         <module>websocket-security</module>
+        <module>mp-demo</module>
+        <module>rbac-model</module>
     </modules>
 
     <properties>
