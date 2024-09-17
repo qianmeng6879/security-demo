@@ -1,0 +1,23 @@
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/db_mp
+    username: postgres
+    password: postgres
+  jackson:
+    date-format: yyyy-MM-dd HH:MM:SS
+    default-property-inclusion: non_null
+mybatis-plus:
+  global-config:
+    db-config:
+      logic-delete-field: is_active
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+
+mxzero:
+  security:
+    jwt:
+      issuer: oauth.mxzero.top
+      secret: jwt-dev
+      expire: 7200
+      refresh: 86400

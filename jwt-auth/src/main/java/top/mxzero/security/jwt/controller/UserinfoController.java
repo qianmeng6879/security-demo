@@ -15,7 +15,7 @@ public class UserinfoController {
 
 
     @PreAuthorize("isAuthenticated()")
-    @RequestMapping("userinfo")
+    @RequestMapping("/userinfo")
     public Object userinfoApi(Principal principal) {
         return principal;
     }

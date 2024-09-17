@@ -3,6 +3,7 @@ package top.mxzero.security.rbac.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
+import top.mxzero.common.exceptions.ServiceException;
 import top.mxzero.security.rbac.entity.Role;
 import top.mxzero.security.rbac.entity.RolePermission;
 import top.mxzero.security.rbac.entity.User;
@@ -66,7 +67,20 @@ public class AuthorizeServiceImpl implements AuthorizeService {
 
     @Override
     public boolean save(User user) {
-        return false;
+        if (userMapper.exists(new QueryWrapper<User>().eq("username", user.getUsername()).eq("deleted", 0))) {
+            throw new ServiceException("用户名已存在");
+        }
+
+        if (user.getEmail() != null && userMapper.exists(new QueryWrapper<User>().eq("email", user.getEmail()).eq("deleted", 0))) {
+            throw new ServiceException("邮箱已被注册");
+        }
+
+
+        if (user.getPhone() != null && userMapper.exists(new QueryWrapper<User>().eq("phone", user.getEmail()).eq("deleted", 0))) {
+            throw new ServiceException("手机号已被注册");
+        }
+
+        return userMapper.insert(user) > 0;
     }
 
     @Override
