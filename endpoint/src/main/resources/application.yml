@@ -7,12 +7,6 @@ spring:
   jackson:
     date-format: yyyy-MM-dd HH:MM:SS
     default-property-inclusion: non_null
-mybatis-plus:
-  global-config:
-    db-config:
-      logic-delete-field: is_active
-      logic-delete-value: 1
-      logic-not-delete-value: 0
 
 mxzero:
   security:
