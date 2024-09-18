@@ -1,10 +1,10 @@
 package top.mxzero.security.rbac.service;
 
 
+import top.mxzero.security.rbac.entity.Permission;
 import top.mxzero.security.rbac.entity.Role;
 import top.mxzero.security.rbac.entity.User;
 
-import java.security.Permission;
 import java.util.List;
 
 /**

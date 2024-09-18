@@ -1,6 +1,8 @@
 package top.mxzero.common.advice;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -18,8 +20,16 @@ import java.util.Map;
  * @author Peng
  * @since 2024/9/18
  */
+@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public RestData<?> handleAllExceptions(Exception e) {
+        e.printStackTrace();
+        log.error(e.getMessage());
+        return RestData.error("服务异常", 500);
+    }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)

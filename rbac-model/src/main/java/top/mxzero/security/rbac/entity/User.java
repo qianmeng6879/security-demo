@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author Peng
@@ -27,4 +28,7 @@ public class User {
     private Date lastLoginTime;
     @TableLogic
     private Integer deleted;
+
+    @TableField(exist = false)
+    private List<Long> roleIds;
 }

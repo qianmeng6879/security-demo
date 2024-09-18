@@ -1,6 +1,7 @@
 package top.mxzero.endpoint.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,6 +21,7 @@ public class MessageController {
     @Autowired
     private JwtService jwtService;
 
+    @PreAuthorize("isAuthenticated()")
     @RequestMapping("/message")
     public String echo(String msg) {
         return "【ECHO】" + msg;
