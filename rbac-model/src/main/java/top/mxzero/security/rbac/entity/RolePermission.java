@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RolePermission {
-    @TableId(type = IdType.NONE)
+    @TableId(type = IdType.AUTO)
     private Long id;
     private Long roleId;
     private Long permissionId;

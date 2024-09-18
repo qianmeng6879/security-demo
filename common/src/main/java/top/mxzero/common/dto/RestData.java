@@ -18,14 +18,14 @@ public class RestData<T> {
     private int code;
 
 
-    public static <T> RestData<T> success() {
-        return success(null);
+    public static <T> RestData<T> success(T data) {
+        return success(data, "success");
     }
 
-    public static <T> RestData<T> success(T data) {
+    public static <T> RestData<T> success(T data, String message) {
         RestData<T> restData = new RestData<>();
         restData.setData(data);
-        restData.setMessage("success");
+        restData.setMessage(message);
         restData.setCode(DEFAULT_SUCCESS_CODE);
         return restData;
     }

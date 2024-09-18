@@ -2,13 +2,21 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="top.mxzero.security.rbac.mapper.PermissionMapper">
+    <cache />
     <select id="findByRoleId" resultType="top.mxzero.security.rbac.entity.Permission">
         SELECT id, name
         FROM t_permission
         WHERE id IN (
-            SELECT permission_id FROM t_role_permission WHERE role_id = #{roleId}
+        SELECT permission_id FROM t_role_permission WHERE role_id = #{roleId}
         )
         ORDER BY id ASC
+    </select>
+    <select id="findNameByUserId" resultType="string">
+        select name from t_permission where id in (
+            select distinct permission_id from t_role_permission where role_id in (
+                select role_id from t_user_role where user_id = #{userId}
+            )
+        )
     </select>
 
 </mapper>

@@ -13,7 +13,7 @@ import lombok.Data;
 @Data
 @TableName("t_permission")
 public class Permission {
-    @TableId(type = IdType.NONE)
+    @TableId(type = IdType.AUTO)
     private Long id;
     private String name;
 }

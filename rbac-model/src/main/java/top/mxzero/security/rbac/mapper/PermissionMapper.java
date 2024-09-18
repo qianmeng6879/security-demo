@@ -14,4 +14,6 @@ import java.util.List;
 @Mapper
 public interface PermissionMapper extends BaseMapper<Permission> {
     List<Permission> findByRoleId(Long roleId);
+
+    List<String> findNameByUserId(Long userId);
 }

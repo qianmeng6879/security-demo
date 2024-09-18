@@ -25,7 +25,7 @@ import java.util.Collections;
  */
 @EnableWebMvc
 @Configuration
-public class WebConfig implements WebMvcConfigurer {
+public class CommonWebConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new TenantHandlerInterceptor()).addPathPatterns("/**");

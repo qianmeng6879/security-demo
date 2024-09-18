@@ -8,16 +8,22 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.filter.OncePerRequestFilter;
+import top.mxzero.common.dto.RestData;
 import top.mxzero.common.dto.UserProfile;
 import top.mxzero.security.jwt.service.impl.JwtService;
 import top.mxzero.security.jwt.utils.UserProfileUtils;
 
+import javax.xml.stream.events.Characters;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
 
 
 /**
@@ -50,12 +56,14 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                 Jws<Claims> claimsJws = jwtService.parseToken(token);
                 String subject = claimsJws.getBody().getSubject();
 
-                UserDetails userDetails = userDetailsService.loadUserByUsername(subject);
-                if (userDetails instanceof UserProfile userProfile) {
-                    UserProfileUtils.set(userProfile);
+                try {
+                    UserDetails userDetails = userDetailsService.loadUserByUsername(subject);
+                    if (userDetails instanceof UserProfile userProfile) {
+                        UserProfileUtils.set(userProfile);
+                    }
+                    SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(userDetails.getUsername(), null, userDetails.getAuthorities()));
+                } catch (UsernameNotFoundException ignored) {
                 }
-
-                SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(userDetails.getUsername(), null, userDetails.getAuthorities()));
             }
         }
 

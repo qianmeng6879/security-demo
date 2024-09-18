@@ -16,7 +16,7 @@ import java.util.List;
 @Data
 @TableName("t_role")
 public class Role {
-    @TableId(type = IdType.NONE)
+    @TableId(type = IdType.AUTO)
     private Long id;
     private String name;
 

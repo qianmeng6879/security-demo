@@ -39,12 +39,16 @@ public class AuthorizeServiceImpl implements AuthorizeService {
 
     @Override
     public List<String> permissionNameByUserId(Long userId) {
-        return List.of();
+        return permissionMapper.findNameByUserId(userId);
     }
 
     @Override
     public List<String> permissionNameByRoleId(Long roleId) {
-        return List.of();
+        List<Long> permissionIds = rolePermissionMapper.selectList(new QueryWrapper<RolePermission>().eq("role_id", roleId).select("permission_id")).stream().map(RolePermission::getPermissionId).toList();
+        if (permissionIds.isEmpty()) {
+            return Collections.emptyList();
+        }
+        return this.permissionMapper.selectList(new QueryWrapper<Permission>().in("id", permissionIds).select("name")).stream().map(Permission::getName).toList();
     }
 
     @Override
@@ -97,20 +101,21 @@ public class AuthorizeServiceImpl implements AuthorizeService {
     @Override
     @Transactional
     public boolean save(User user) {
-        if (userMapper.exists(new QueryWrapper<User>().eq("username", user.getUsername()).eq("deleted", 0).ne("id", user.getId()))) {
+        if (userMapper.exists(new QueryWrapper<User>().eq("username", user.getUsername()).eq("deleted", 0))) {
             throw new ServiceException("用户名已存在");
         }
 
-        if (user.getEmail() != null && userMapper.exists(new QueryWrapper<User>().eq("email", user.getEmail()).eq("deleted", 0).ne("id", user.getId()))) {
+        if (user.getEmail() != null && userMapper.exists(new QueryWrapper<User>().eq("email", user.getEmail()).eq("deleted", 0))) {
             throw new ServiceException("邮箱已被注册");
         }
 
 
-        if (user.getPhone() != null && userMapper.exists(new QueryWrapper<User>().eq("phone", user.getEmail()).eq("deleted", 0).ne("id", user.getId()))) {
+        if (user.getPhone() != null && userMapper.exists(new QueryWrapper<User>().eq("phone", user.getEmail()).eq("deleted", 0))) {
             throw new ServiceException("手机号已被注册");
         }
 
-        return userMapper.insertOrUpdate(user);
+
+        return userMapper.insert(user) > 0;
     }
 
     @Override

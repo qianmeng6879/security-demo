@@ -1,73 +1,102 @@
 /*
- Navicat Premium Data Transfer
+ Navicat Premium Dump SQL
 
- Source Server         : localhost_pgsql
+ Source Server         : postgresql_local
  Source Server Type    : PostgreSQL
- Source Server Version : 140008
+ Source Server Version : 150008 (150008)
  Source Host           : localhost:5432
- Source Catalog        : db_mp
+ Source Catalog        : db_endpoint
  Source Schema         : public
 
  Target Server Type    : PostgreSQL
- Target Server Version : 140008
+ Target Server Version : 150008 (150008)
  File Encoding         : 65001
 
- Date: 17/09/2024 23:28:55
+ Date: 18/09/2024 17:20:08
 */
 
 
 -- ----------------------------
--- Sequence structure for permission_id_seq
+-- Sequence structure for permission_seq
 -- ----------------------------
-DROP SEQUENCE IF EXISTS "public"."permission_id_seq";
-CREATE SEQUENCE "public"."permission_id_seq" 
+DROP SEQUENCE IF EXISTS "public"."permission_seq";
+CREATE SEQUENCE "public"."permission_seq" 
 INCREMENT 1
 MINVALUE  1
 MAXVALUE 9223372036854775807
 START 1
 CACHE 1;
+ALTER SEQUENCE "public"."permission_seq" OWNER TO "postgres";
 
 -- ----------------------------
--- Sequence structure for role_id_seq
+-- Sequence structure for role_permission_seq
 -- ----------------------------
-DROP SEQUENCE IF EXISTS "public"."role_id_seq";
-CREATE SEQUENCE "public"."role_id_seq" 
+DROP SEQUENCE IF EXISTS "public"."role_permission_seq";
+CREATE SEQUENCE "public"."role_permission_seq" 
 INCREMENT 1
 MINVALUE  1
 MAXVALUE 9223372036854775807
 START 1
 CACHE 1;
+ALTER SEQUENCE "public"."role_permission_seq" OWNER TO "postgres";
 
 -- ----------------------------
--- Sequence structure for user_id_seq
+-- Sequence structure for role_seq
 -- ----------------------------
-DROP SEQUENCE IF EXISTS "public"."user_id_seq";
-CREATE SEQUENCE "public"."user_id_seq" 
+DROP SEQUENCE IF EXISTS "public"."role_seq";
+CREATE SEQUENCE "public"."role_seq" 
 INCREMENT 1
 MINVALUE  1
 MAXVALUE 9223372036854775807
 START 1
 CACHE 1;
+ALTER SEQUENCE "public"."role_seq" OWNER TO "postgres";
+
+-- ----------------------------
+-- Sequence structure for user_role_seq
+-- ----------------------------
+DROP SEQUENCE IF EXISTS "public"."user_role_seq";
+CREATE SEQUENCE "public"."user_role_seq" 
+INCREMENT 1
+MINVALUE  1
+MAXVALUE 9223372036854775807
+START 1
+CACHE 1;
+ALTER SEQUENCE "public"."user_role_seq" OWNER TO "postgres";
+
+-- ----------------------------
+-- Sequence structure for user_seq
+-- ----------------------------
+DROP SEQUENCE IF EXISTS "public"."user_seq";
+CREATE SEQUENCE "public"."user_seq" 
+INCREMENT 1
+MINVALUE  1
+MAXVALUE 9223372036854775807
+START 1
+CACHE 1;
+ALTER SEQUENCE "public"."user_seq" OWNER TO "postgres";
 
 -- ----------------------------
 -- Table structure for t_permission
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."t_permission";
 CREATE TABLE "public"."t_permission" (
-  "id" int8 NOT NULL DEFAULT nextval('permission_id_seq'::regclass),
+  "id" int8 NOT NULL DEFAULT nextval('permission_seq'::regclass),
   "name" varchar(255) COLLATE "pg_catalog"."default"
 )
 ;
+ALTER TABLE "public"."t_permission" OWNER TO "postgres";
 
 -- ----------------------------
 -- Table structure for t_role
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."t_role";
 CREATE TABLE "public"."t_role" (
-  "id" int8 NOT NULL DEFAULT nextval('role_id_seq'::regclass),
+  "id" int8 NOT NULL DEFAULT nextval('role_seq'::regclass),
   "name" varchar(255) COLLATE "pg_catalog"."default"
 )
 ;
+ALTER TABLE "public"."t_role" OWNER TO "postgres";
 
 -- ----------------------------
 -- Table structure for t_role_permission
@@ -76,16 +105,17 @@ DROP TABLE IF EXISTS "public"."t_role_permission";
 CREATE TABLE "public"."t_role_permission" (
   "role_id" int8 NOT NULL,
   "permission_id" int8 NOT NULL,
-  "id" int8 NOT NULL
+  "id" int8 NOT NULL DEFAULT nextval('role_permission_seq'::regclass)
 )
 ;
+ALTER TABLE "public"."t_role_permission" OWNER TO "postgres";
 
 -- ----------------------------
 -- Table structure for t_user
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."t_user";
 CREATE TABLE "public"."t_user" (
-  "id" int8 NOT NULL DEFAULT nextval('user_id_seq'::regclass),
+  "id" int8 NOT NULL DEFAULT nextval('user_seq'::regclass),
   "username" varchar(255) COLLATE "pg_catalog"."default",
   "password" varchar(255) COLLATE "pg_catalog"."default",
   "nickname" varchar(255) COLLATE "pg_catalog"."default",
@@ -98,6 +128,7 @@ CREATE TABLE "public"."t_user" (
   "avatar_url" varchar(255) COLLATE "pg_catalog"."default"
 )
 ;
+ALTER TABLE "public"."t_user" OWNER TO "postgres";
 
 -- ----------------------------
 -- Table structure for t_user_role
@@ -106,24 +137,10 @@ DROP TABLE IF EXISTS "public"."t_user_role";
 CREATE TABLE "public"."t_user_role" (
   "user_id" int8 NOT NULL,
   "role_id" int8 NOT NULL,
-  "id" int8 NOT NULL
+  "id" int8 NOT NULL DEFAULT nextval('user_role_seq'::regclass)
 )
 ;
-
--- ----------------------------
--- Alter sequences owned by
--- ----------------------------
-SELECT setval('"public"."permission_id_seq"', 3, false);
-
--- ----------------------------
--- Alter sequences owned by
--- ----------------------------
-SELECT setval('"public"."role_id_seq"', 3, false);
-
--- ----------------------------
--- Alter sequences owned by
--- ----------------------------
-SELECT setval('"public"."user_id_seq"', 3, false);
+ALTER TABLE "public"."t_user_role" OWNER TO "postgres";
 
 -- ----------------------------
 -- Uniques structure for table t_permission

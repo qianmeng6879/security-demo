@@ -13,7 +13,7 @@ import java.util.List;
 @TableName("t_user")
 @Data
 public class User {
-    @TableId(type = IdType.NONE)
+    @TableId(type = IdType.AUTO)
     private Long id;
     private String username;
     private String password;
