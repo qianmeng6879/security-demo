@@ -16,9 +16,9 @@ import java.util.Date;
  */
 @Mapper
 public interface UserMapper extends BaseMapper<User> {
-    @Select("select id from t_user where username = #{username} and deleted = 0")
-    Long findIdByUsername(String username);
+    @Select("select id,username,password,nickname,email,phone,created_time,updated_time,last_login_time,avatar_url from t_user where username = #{username} and deleted = 0")
+    User findByUsername(String username);
 
-    @Update("update t_user set last_login_time = #{date} where username = #{username} and deleted = 0")
-    int updateLoginTimeByUsername(@Param("username") String username, @Param("date") Date date);
+    @Update("update t_user set last_login_time = #{date} where id = #{id} and deleted = 0")
+    int updateLoginTimeById(@Param("id") Long id, @Param("date") Date date);
 }

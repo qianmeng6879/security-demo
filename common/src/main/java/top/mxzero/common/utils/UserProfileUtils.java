@@ -1,4 +1,4 @@
-package top.mxzero.security.jwt.utils;
+package top.mxzero.common.utils;
 
 import top.mxzero.common.dto.UserProfile;
 

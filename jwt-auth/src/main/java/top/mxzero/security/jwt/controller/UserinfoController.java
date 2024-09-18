@@ -2,12 +2,9 @@ package top.mxzero.security.jwt.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import top.mxzero.security.jwt.utils.UserProfileUtils;
+import top.mxzero.common.utils.UserProfileUtils;
 import top.mxzero.security.rbac.service.AuthorizeService;
 
 import java.security.Principal;

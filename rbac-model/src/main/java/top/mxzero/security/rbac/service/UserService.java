@@ -1,4 +1,4 @@
-package top.mxzero.endpoint.service;
+package top.mxzero.security.rbac.service;
 
 /**
  * @author Peng

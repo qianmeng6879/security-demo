@@ -1,18 +1,18 @@
 /*
- Navicat Premium Dump SQL
+ Navicat Premium Data Transfer
 
- Source Server         : postgresql_local
+ Source Server         : localhost_pgsql
  Source Server Type    : PostgreSQL
- Source Server Version : 150008 (150008)
+ Source Server Version : 140008
  Source Host           : localhost:5432
  Source Catalog        : db_endpoint
  Source Schema         : public
 
  Target Server Type    : PostgreSQL
- Target Server Version : 150008 (150008)
+ Target Server Version : 140008
  File Encoding         : 65001
 
- Date: 18/09/2024 17:20:08
+ Date: 18/09/2024 23:41:21
 */
 
 
@@ -26,7 +26,6 @@ MINVALUE  1
 MAXVALUE 9223372036854775807
 START 1
 CACHE 1;
-ALTER SEQUENCE "public"."permission_seq" OWNER TO "postgres";
 
 -- ----------------------------
 -- Sequence structure for role_permission_seq
@@ -38,7 +37,6 @@ MINVALUE  1
 MAXVALUE 9223372036854775807
 START 1
 CACHE 1;
-ALTER SEQUENCE "public"."role_permission_seq" OWNER TO "postgres";
 
 -- ----------------------------
 -- Sequence structure for role_seq
@@ -50,7 +48,6 @@ MINVALUE  1
 MAXVALUE 9223372036854775807
 START 1
 CACHE 1;
-ALTER SEQUENCE "public"."role_seq" OWNER TO "postgres";
 
 -- ----------------------------
 -- Sequence structure for user_role_seq
@@ -62,7 +59,6 @@ MINVALUE  1
 MAXVALUE 9223372036854775807
 START 1
 CACHE 1;
-ALTER SEQUENCE "public"."user_role_seq" OWNER TO "postgres";
 
 -- ----------------------------
 -- Sequence structure for user_seq
@@ -74,7 +70,6 @@ MINVALUE  1
 MAXVALUE 9223372036854775807
 START 1
 CACHE 1;
-ALTER SEQUENCE "public"."user_seq" OWNER TO "postgres";
 
 -- ----------------------------
 -- Table structure for t_permission
@@ -85,7 +80,10 @@ CREATE TABLE "public"."t_permission" (
   "name" varchar(255) COLLATE "pg_catalog"."default"
 )
 ;
-ALTER TABLE "public"."t_permission" OWNER TO "postgres";
+
+-- ----------------------------
+-- Records of t_permission
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for t_role
@@ -96,19 +94,27 @@ CREATE TABLE "public"."t_role" (
   "name" varchar(255) COLLATE "pg_catalog"."default"
 )
 ;
-ALTER TABLE "public"."t_role" OWNER TO "postgres";
+
+-- ----------------------------
+-- Records of t_role
+-- ----------------------------
+INSERT INTO "public"."t_role" VALUES (1, 'ROLE_USER');
+INSERT INTO "public"."t_role" VALUES (2, 'ROLE_ADMIN');
 
 -- ----------------------------
 -- Table structure for t_role_permission
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."t_role_permission";
 CREATE TABLE "public"."t_role_permission" (
+  "id" int8 NOT NULL DEFAULT nextval('role_permission_seq'::regclass),
   "role_id" int8 NOT NULL,
-  "permission_id" int8 NOT NULL,
-  "id" int8 NOT NULL DEFAULT nextval('role_permission_seq'::regclass)
+  "permission_id" int8 NOT NULL
 )
 ;
-ALTER TABLE "public"."t_role_permission" OWNER TO "postgres";
+
+-- ----------------------------
+-- Records of t_role_permission
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for t_user
@@ -128,19 +134,53 @@ CREATE TABLE "public"."t_user" (
   "avatar_url" varchar(255) COLLATE "pg_catalog"."default"
 )
 ;
-ALTER TABLE "public"."t_user" OWNER TO "postgres";
+
+-- ----------------------------
+-- Records of t_user
+-- ----------------------------
+INSERT INTO "public"."t_user" VALUES (1, 'admin', '$2a$10$0fXjEA/aZTCtGMme.6i4u.91sjQXSP2Ul7QFhSWeaHi8SHEDdJVWm', 'admin', NULL, 'admin@odoo.com', '2024-09-18 23:39:20.433', '2024-09-18 23:39:20.433', NULL, 0, NULL);
 
 -- ----------------------------
 -- Table structure for t_user_role
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."t_user_role";
 CREATE TABLE "public"."t_user_role" (
+  "id" int8 NOT NULL DEFAULT nextval('user_role_seq'::regclass),
   "user_id" int8 NOT NULL,
-  "role_id" int8 NOT NULL,
-  "id" int8 NOT NULL DEFAULT nextval('user_role_seq'::regclass)
+  "role_id" int8 NOT NULL
 )
 ;
-ALTER TABLE "public"."t_user_role" OWNER TO "postgres";
+
+-- ----------------------------
+-- Records of t_user_role
+-- ----------------------------
+INSERT INTO "public"."t_user_role" VALUES (1, 1, 1);
+INSERT INTO "public"."t_user_role" VALUES (2, 1, 2);
+
+-- ----------------------------
+-- Alter sequences owned by
+-- ----------------------------
+SELECT setval('"public"."permission_seq"', 2, false);
+
+-- ----------------------------
+-- Alter sequences owned by
+-- ----------------------------
+SELECT setval('"public"."role_permission_seq"', 2, false);
+
+-- ----------------------------
+-- Alter sequences owned by
+-- ----------------------------
+SELECT setval('"public"."role_seq"', 3, true);
+
+-- ----------------------------
+-- Alter sequences owned by
+-- ----------------------------
+SELECT setval('"public"."user_role_seq"', 3, true);
+
+-- ----------------------------
+-- Alter sequences owned by
+-- ----------------------------
+SELECT setval('"public"."user_seq"', 2, true);
 
 -- ----------------------------
 -- Uniques structure for table t_permission

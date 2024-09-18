@@ -2,12 +2,12 @@ package top.mxzero.endpoint.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -24,18 +24,12 @@ import top.mxzero.security.rbac.service.impl.RbacUserDetailsServiceImpl;
 @EnableMethodSecurity
 @EnableWebSecurity
 @Configuration
+@Import(RbacUserDetailsServiceImpl.class)
 public class SecurityConfig {
-
-    @Bean
-    public UserDetailsService userDetailsService() {
-        return new RbacUserDetailsServiceImpl();
-    }
-
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
 
     @Bean
     public JsonAccessDeniedHandler jsonAccessDeniedHandler() {

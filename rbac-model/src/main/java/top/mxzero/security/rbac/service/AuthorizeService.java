@@ -1,6 +1,8 @@
 package top.mxzero.security.rbac.service;
 
 
+import top.mxzero.common.dto.PageDTO;
+import top.mxzero.security.rbac.dto.UserDTO;
 import top.mxzero.security.rbac.entity.Permission;
 import top.mxzero.security.rbac.entity.Role;
 import top.mxzero.security.rbac.entity.User;
@@ -24,6 +26,8 @@ public interface AuthorizeService {
     List<Role> allRole();
 
     List<Permission> allPermission();
+
+    PageDTO<UserDTO> listUser(long currentPage, long pageSize, String keyword);
 
     boolean save(Role role);
 

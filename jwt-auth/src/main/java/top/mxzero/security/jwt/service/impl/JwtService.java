@@ -80,7 +80,7 @@ public class JwtService {
 
     public TokenDTO createAccessTokenAndRefreshToken(String accessTokenId, String refreshTokenId, String subject) {
         try {
-            return new TokenDTO(createToken(accessTokenId, subject), createToken(accessTokenId, subject, TokenType.REFRESH_TOKEN), getAccessExpire());
+            return new TokenDTO(createToken(accessTokenId, subject), createToken(refreshTokenId, subject, TokenType.REFRESH_TOKEN), getAccessExpire());
         } catch (Exception e) {
             return null;
         }

@@ -1,6 +1,7 @@
 package top.mxzero.security.rbac.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import java.util.Date;
@@ -30,5 +31,6 @@ public class User {
     private Integer deleted;
 
     @TableField(exist = false)
+    @NotNull
     private List<Long> roleIds;
 }

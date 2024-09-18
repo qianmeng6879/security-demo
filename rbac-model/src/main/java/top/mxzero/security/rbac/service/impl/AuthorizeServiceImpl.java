@@ -2,9 +2,14 @@ package top.mxzero.security.rbac.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
+import top.mxzero.common.dto.PageDTO;
 import top.mxzero.common.exceptions.ServiceException;
+import top.mxzero.common.utils.DeepBeanUtil;
+import top.mxzero.security.rbac.dto.UserDTO;
 import top.mxzero.security.rbac.entity.*;
 import top.mxzero.security.rbac.mapper.*;
 import top.mxzero.security.rbac.service.AuthorizeService;
@@ -59,6 +64,19 @@ public class AuthorizeServiceImpl implements AuthorizeService {
     @Override
     public List<Permission> allPermission() {
         return this.permissionMapper.selectList(null);
+    }
+
+    @Override
+    public PageDTO<UserDTO> listUser(long currentPage, long pageSize, String keyword) {
+        QueryWrapper<User> queryWrapper = new QueryWrapper<User>().eq("deleted", 0);
+
+        if (StringUtils.hasLength(keyword)) {
+            queryWrapper.like("username", keyword).or(or -> or.like("nickname", keyword)).or(or -> or.like("email", keyword)).or(or -> or.like("phone", keyword));
+        }
+
+        Page<User> page = userMapper.selectPage(new Page<User>(currentPage, pageSize), queryWrapper);
+
+        return new PageDTO<>(DeepBeanUtil.copyProperties(page.getRecords(), UserDTO.class), page.getTotal(), pageSize, currentPage);
     }
 
     @Override

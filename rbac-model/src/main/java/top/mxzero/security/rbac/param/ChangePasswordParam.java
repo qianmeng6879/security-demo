@@ -1,4 +1,4 @@
-package top.mxzero.endpoint.param;
+package top.mxzero.security.rbac.param;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
