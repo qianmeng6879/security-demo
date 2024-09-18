@@ -1,7 +1,6 @@
-package top.mxzero.security.jwt.controller.param;
+package top.mxzero.endpoint.param;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 
@@ -10,11 +9,14 @@ import org.hibernate.validator.constraints.Length;
  * @since 2024/9/18
  */
 @Data
-public class LoginParam {
-    @NotBlank
-    @Length(max = 10)
-    private String username;
+public class ChangePasswordParam {
     @NotBlank
     @Length(min = 6, max = 16)
-    private String password;
+    private String oldPwd;
+    @NotBlank
+    @Length(min = 6, max = 16)
+    private String newPwd;
+    @NotBlank
+    @Length(min = 6, max = 16)
+    private String confirmPwd;
 }

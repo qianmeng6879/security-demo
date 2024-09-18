@@ -13,7 +13,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.filter.OncePerRequestFilter;
+import top.mxzero.common.dto.UserProfile;
 import top.mxzero.security.jwt.service.impl.JwtService;
+import top.mxzero.security.jwt.utils.UserProfileUtils;
 
 import java.io.IOException;
 
@@ -49,13 +51,20 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                 String subject = claimsJws.getBody().getSubject();
 
                 UserDetails userDetails = userDetailsService.loadUserByUsername(subject);
+                if (userDetails instanceof UserProfile userProfile) {
+                    UserProfileUtils.set(userProfile);
+                }
 
                 SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(userDetails.getUsername(), null, userDetails.getAuthorities()));
             }
         }
 
 
-        filterChain.doFilter(request, response);
+        try {
+            filterChain.doFilter(request, response);
+        } finally {
+            UserProfileUtils.clear();
+        }
     }
 
 }

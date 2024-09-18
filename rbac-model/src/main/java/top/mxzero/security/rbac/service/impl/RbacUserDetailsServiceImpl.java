@@ -6,6 +6,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import top.mxzero.common.dto.UserProfile;
 import top.mxzero.security.rbac.entity.User;
 import top.mxzero.security.rbac.mapper.UserMapper;
 import top.mxzero.security.rbac.service.AuthorizeService;
@@ -34,6 +35,6 @@ public class RbacUserDetailsServiceImpl implements UserDetailsService {
 
         List<SimpleGrantedAuthority> authorities = this.authorizeService.roleNameByUserId(user.getId()).stream().map(SimpleGrantedAuthority::new).toList();
 
-        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), authorities);
+        return new UserProfile(user.getId(), user.getUsername(), user.getPassword(), authorities);
     }
 }
