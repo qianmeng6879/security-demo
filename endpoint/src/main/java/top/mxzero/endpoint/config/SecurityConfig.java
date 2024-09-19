@@ -44,17 +44,18 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthorizationFilter jwtAuthorizationFilter) throws Exception {
         http
-                .sessionManagement(session -> session.disable())
+//                .sessionManagement(session -> session.disable())
                 .authorizeHttpRequests(request ->
                         request.requestMatchers("/token", "/message", "/register", "/public/**").permitAll()
                                 .anyRequest().authenticated()
                 )
-                .exceptionHandling(handle -> {
-                    handle.accessDeniedHandler(this.jsonAccessDeniedHandler())
-                            .authenticationEntryPoint(this.jsonAuthenticationEntryPoint());
-                })
+//                .exceptionHandling(handle -> {
+//                    handle.accessDeniedHandler(this.jsonAccessDeniedHandler())
+//                            .authenticationEntryPoint(this.jsonAuthenticationEntryPoint());
+//                })
 
-                .formLogin(login -> login.permitAll())
+                .formLogin(AbstractHttpConfigurer::disable)
+                .logout(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable)
                 .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();

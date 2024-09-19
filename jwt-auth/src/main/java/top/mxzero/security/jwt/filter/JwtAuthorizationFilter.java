@@ -19,6 +19,7 @@ import top.mxzero.security.jwt.service.impl.JwtService;
 import top.mxzero.common.utils.UserProfileUtils;
 
 import java.io.IOException;
+import java.util.Map;
 
 
 /**
@@ -49,10 +50,10 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         if (token != null) {
             if (jwtService.verifyToken(token)) {
                 Jws<Claims> claimsJws = jwtService.parseToken(token);
-                String subject = claimsJws.getBody().getSubject();
+                Map<String, Object> subject = this.objectMapper.readValue(claimsJws.getBody().getSubject(), Map.class);
 
                 try {
-                    UserDetails userDetails = userDetailsService.loadUserByUsername(subject);
+                    UserDetails userDetails = userDetailsService.loadUserByUsername(subject.get("username").toString());
                     if (userDetails instanceof UserProfile userProfile) {
                         UserProfileUtils.set(userProfile);
                     }
