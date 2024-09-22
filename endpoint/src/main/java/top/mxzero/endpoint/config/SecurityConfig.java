@@ -13,7 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import top.mxzero.security.jwt.components.JSONAuthenticationEntryPoint;
-import top.mxzero.security.jwt.components.JsonAccessDeniedHandler;
+import top.mxzero.security.jwt.components.JSONAccessDeniedHandler;
 import top.mxzero.security.jwt.filter.JwtAuthorizationFilter;
 import top.mxzero.security.rbac.service.impl.RbacUserDetailsServiceImpl;
 
@@ -32,8 +32,8 @@ public class SecurityConfig {
     }
 
     @Bean
-    public JsonAccessDeniedHandler jsonAccessDeniedHandler() {
-        return new JsonAccessDeniedHandler();
+    public JSONAccessDeniedHandler jsonAccessDeniedHandler() {
+        return new JSONAccessDeniedHandler();
     }
 
     @Bean
@@ -42,22 +42,26 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthorizationFilter jwtAuthorizationFilter) throws Exception {
+    public JwtAuthorizationFilter jwtAuthorizationFilter() {
+        return new JwtAuthorizationFilter();
+    }
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-//                .sessionManagement(session -> session.disable())
+                .sessionManagement(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request ->
-                        request.requestMatchers("/token", "/message", "/register", "/public/**").permitAll()
+                        request.requestMatchers("/token/**", "/message", "/register", "/public/**").permitAll()
                                 .anyRequest().authenticated()
                 )
-//                .exceptionHandling(handle -> {
-//                    handle.accessDeniedHandler(this.jsonAccessDeniedHandler())
-//                            .authenticationEntryPoint(this.jsonAuthenticationEntryPoint());
-//                })
-
+                .exceptionHandling(handle -> {
+                    handle.accessDeniedHandler(this.jsonAccessDeniedHandler())
+                            .authenticationEntryPoint(this.jsonAuthenticationEntryPoint());
+                })
                 .formLogin(AbstractHttpConfigurer::disable)
                 .logout(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable)
-                .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 

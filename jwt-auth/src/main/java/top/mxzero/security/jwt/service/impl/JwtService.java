@@ -1,10 +1,8 @@
 package top.mxzero.security.jwt.service.impl;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import top.mxzero.security.jwt.dto.JwtProps;
 import top.mxzero.security.jwt.dto.TokenDTO;
 import top.mxzero.security.jwt.dto.TokenType;
@@ -20,7 +18,6 @@ import java.util.Map;
  * @author Peng
  * @since 2024/9/3
  */
-@Component
 public class JwtService {
     @Autowired
     private JwtProps jwtProps;
@@ -32,6 +29,10 @@ public class JwtService {
 
     public long getAccessExpire() {
         return jwtProps.getExpire();
+    }
+
+    public long getRefreshExpire() {
+        return jwtProps.getRefresh();
     }
 
     private SecretKey generaKey() {
@@ -48,7 +49,7 @@ public class JwtService {
         }
     }
 
-    public String createToken(String tokenId, String subject, TokenType tokenType) throws JsonProcessingException {
+    public String createToken(String tokenId, String subject, TokenType tokenType) {
         Date currentDate = new Date();
         Date expireDate;
 

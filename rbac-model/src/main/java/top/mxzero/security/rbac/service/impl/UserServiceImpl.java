@@ -5,6 +5,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import top.mxzero.common.exceptions.ServiceException;
+import top.mxzero.common.utils.DeepBeanUtil;
+import top.mxzero.security.rbac.dto.Userinfo;
 import top.mxzero.security.rbac.service.UserService;
 import top.mxzero.security.rbac.entity.User;
 import top.mxzero.security.rbac.mapper.UserMapper;
@@ -35,5 +37,19 @@ public class UserServiceImpl implements UserService {
         updateUser.setId(userId);
         updateUser.setPassword(this.passwordEncoder.encode(newPwd));
         return this.userMapper.updateById(updateUser) > 0;
+    }
+
+    @Override
+    public Userinfo getUserinfo(Long userId) {
+        return DeepBeanUtil.copyProperties(userMapper.selectById(userId), Userinfo::new);
+    }
+
+    @Override
+    public boolean save(Userinfo userinfo) {
+        User user = new User();
+        user.setId(userinfo.getId());
+        user.setNickname(userinfo.getNickname());
+        user.setAvatarUrl(userinfo.getAvatarUrl());
+        return userMapper.updateById(user) > 0;
     }
 }

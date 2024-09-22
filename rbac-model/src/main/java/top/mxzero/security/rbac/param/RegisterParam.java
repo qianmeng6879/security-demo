@@ -1,4 +1,4 @@
-package top.mxzero.security.jwt.controller.param;
+package top.mxzero.security.rbac.param;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

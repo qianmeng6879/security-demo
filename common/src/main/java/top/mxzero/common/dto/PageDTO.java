@@ -1,5 +1,6 @@
 package top.mxzero.common.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 import java.util.List;
@@ -10,9 +11,13 @@ import java.util.List;
  */
 @Data
 public class PageDTO<T> {
+    @JsonProperty("records")
     private List<T> records;
+    @JsonProperty("total_page")
     private long totalPage;
+    @JsonProperty("total_count")
     private long totalCount;
+    @JsonProperty("current_page")
     private long currentPage;
 
     public PageDTO() {

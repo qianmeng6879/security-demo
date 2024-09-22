@@ -11,21 +11,18 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;
-import org.springframework.security.web.access.AccessDeniedHandlerImpl;
-import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
 import top.mxzero.common.dto.RestData;
 
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
-import java.util.Map;
 
 /**
  * @author Peng
  * @email qianmeng6879@163.com
  * @since 2024/8/13
  */
-public class JsonAccessDeniedHandler implements AccessDeniedHandler, ApplicationContextAware {
+public class JSONAccessDeniedHandler implements AccessDeniedHandler, ApplicationContextAware {
     private ObjectMapper objectMapper;
 
     @Override

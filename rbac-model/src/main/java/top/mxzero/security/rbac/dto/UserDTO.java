@@ -1,5 +1,6 @@
 package top.mxzero.security.rbac.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 import java.util.Date;
@@ -20,5 +21,6 @@ public class UserDTO {
     private Date lastLoginTime;
     private Date createdTime;
     private Date updatedTime;
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private List<String> roles;
 }

@@ -1,5 +1,6 @@
 package top.mxzero.common.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 
 /**
@@ -13,7 +14,9 @@ public class RestData<T> {
     public static final int DEFAULT_SUCCESS_CODE = 0;
 
     private String message;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Object error;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private T data;
     private int code;
 

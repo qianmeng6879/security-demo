@@ -12,7 +12,7 @@ import java.util.Set;
  * @since 2024/9/5
  */
 public class CustomerTenantHandle implements TenantLineHandler {
-    private static final Set<String> IGNORE_TABLE_LIST = Set.of("t_user", "t_role", "t_permission", "t_user_role", "t_role_permission");
+    private static final Set<String> IGNORE_TABLE_LIST = Set.of("t_user", "t_role", "t_permission", "t_user_role", "t_role_permission", "t_message");
 
     @Override
     public Expression getTenantId() {

@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import top.mxzero.common.advice.GlobalExceptionHandler;
 import top.mxzero.common.components.CustomerTenantHandle;
+import top.mxzero.common.components.RedisIdentifierGenerator;
 
 import java.util.Date;
 
@@ -25,6 +26,10 @@ import java.util.Date;
 @ComponentScan
 public class CommonAutoConfig {
 
+    @Bean
+    public RedisIdentifierGenerator redisIdentifierGenerator() {
+        return new RedisIdentifierGenerator();
+    }
 
     @Bean
     public MybatisPlusInterceptor mybatisPlusInterceptor() {
