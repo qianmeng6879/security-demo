@@ -29,13 +29,6 @@ public class RbacUserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = this.userMapper.selectOne(new QueryWrapper<User>().eq("username", username));
-        if (user == null) {
-            throw new UsernameNotFoundException("用户【" + username + "】不存在");
-        }
-
-        List<SimpleGrantedAuthority> authorities = new ArrayList<>(this.authorizeService.roleNameByUserId(user.getId()).stream().map(SimpleGrantedAuthority::new).toList());
-        authorities.addAll(this.authorizeService.permissionNameByUserId(user.getId()).stream().map(SimpleGrantedAuthority::new).toList());
-        return new UserProfile(user.getId(), user.getUsername(), user.getPassword(), authorities);
+        return this.authorizeService.getUserProfile(username);
     }
 }

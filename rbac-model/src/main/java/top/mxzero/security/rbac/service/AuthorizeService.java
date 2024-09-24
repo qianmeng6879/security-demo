@@ -2,7 +2,9 @@ package top.mxzero.security.rbac.service;
 
 
 import top.mxzero.common.dto.PageDTO;
+import top.mxzero.common.dto.UserProfile;
 import top.mxzero.security.rbac.dto.UserDTO;
+import top.mxzero.security.rbac.dto.Userinfo;
 import top.mxzero.security.rbac.entity.Permission;
 import top.mxzero.security.rbac.entity.Role;
 import top.mxzero.security.rbac.entity.User;
@@ -17,6 +19,12 @@ import java.util.List;
  * @since 2024/8/21
  */
 public interface AuthorizeService {
+
+    String USERINFO_KEY_PREFIX = "userprofile:";
+
+
+    UserProfile getUserProfile(String username);
+
     List<String> roleNameByUserId(Long userId);
 
     List<String> permissionNameByUserId(Long userId);

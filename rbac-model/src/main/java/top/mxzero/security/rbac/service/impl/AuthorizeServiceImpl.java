@@ -3,10 +3,15 @@ package top.mxzero.security.rbac.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import top.mxzero.common.dto.PageDTO;
+import top.mxzero.common.dto.UserProfile;
 import top.mxzero.common.exceptions.ServiceException;
 import top.mxzero.common.utils.DeepBeanUtil;
 import top.mxzero.security.rbac.dto.UserDTO;
@@ -14,13 +19,17 @@ import top.mxzero.security.rbac.entity.*;
 import top.mxzero.security.rbac.mapper.*;
 import top.mxzero.security.rbac.service.AuthorizeService;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author Peng
  * @since 2024/9/13
  */
+@Slf4j
 public class AuthorizeServiceImpl implements AuthorizeService {
     @Autowired
     private UserMapper userMapper;
@@ -32,6 +41,42 @@ public class AuthorizeServiceImpl implements AuthorizeService {
     private RolePermissionMapper rolePermissionMapper;
     @Autowired
     private PermissionMapper permissionMapper;
+
+    @Autowired
+    private StringRedisTemplate redisTemplate;
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    @Override
+    public UserProfile getUserProfile(String username) {
+//        String key = USERINFO_KEY_PREFIX + username;
+//        String data = this.redisTemplate.opsForValue().get(key);
+//
+//        if (StringUtils.hasLength(data)) {
+//            try {
+//                Map<String, Object> map = this.objectMapper.readValue(data, Map.class);
+//                new UserProfile(map.get("id"), map.get("username"), map.get("password"), map.get(""));
+//            } catch (Exception e) {
+//                log.error(e.getMessage());
+//            }
+//        }
+
+
+        User user = this.userMapper.selectOne(new QueryWrapper<User>().eq("username", username));
+        if (user == null) {
+            throw new ServiceException("用户【" + username + "】不存在");
+        }
+
+        List<SimpleGrantedAuthority> authorities = new ArrayList<>(this.roleNameByUserId(user.getId()).stream().map(SimpleGrantedAuthority::new).toList());
+        authorities.addAll(this.permissionNameByUserId(user.getId()).stream().map(SimpleGrantedAuthority::new).toList());
+        UserProfile userProfile = new UserProfile(user.getId(), user.getUsername(), user.getPassword(), authorities);
+//        try {
+//            this.redisTemplate.opsForValue().set(key, this.objectMapper.writeValueAsString(user), 30, TimeUnit.MINUTES);
+//        } catch (Exception ignored) {
+//        }
+        return userProfile;
+    }
 
     @Override
     public List<String> roleNameByUserId(Long userId) {
@@ -130,6 +175,10 @@ public class AuthorizeServiceImpl implements AuthorizeService {
 
         if (user.getPhone() != null && userMapper.exists(new QueryWrapper<User>().eq("phone", user.getEmail()).eq("deleted", 0))) {
             throw new ServiceException("手机号已被注册");
+        }
+
+        if (Boolean.TRUE.equals(this.redisTemplate.hasKey(USERINFO_KEY_PREFIX + user.getUsername()))) {
+            this.redisTemplate.delete(USERINFO_KEY_PREFIX + user.getUsername());
         }
 
 
