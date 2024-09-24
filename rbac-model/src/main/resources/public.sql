@@ -12,7 +12,7 @@
  Target Server Version : 140008
  File Encoding         : 65001
 
- Date: 18/09/2024 23:41:21
+ Date: 24/09/2024 23:20:47
 */
 
 
@@ -72,6 +72,27 @@ START 1
 CACHE 1;
 
 -- ----------------------------
+-- Table structure for system_status
+-- ----------------------------
+DROP TABLE IF EXISTS "public"."system_status";
+CREATE TABLE "public"."system_status" (
+  "status_key" varchar(255) COLLATE "pg_catalog"."default" NOT NULL,
+  "status_value" varchar(255) COLLATE "pg_catalog"."default" NOT NULL
+)
+;
+
+-- ----------------------------
+-- Table structure for t_message
+-- ----------------------------
+DROP TABLE IF EXISTS "public"."t_message";
+CREATE TABLE "public"."t_message" (
+  "id" int8 NOT NULL,
+  "content" varchar(255) COLLATE "pg_catalog"."default",
+  "created_time" timestamp(6)
+)
+;
+
+-- ----------------------------
 -- Table structure for t_permission
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."t_permission";
@@ -80,10 +101,6 @@ CREATE TABLE "public"."t_permission" (
   "name" varchar(255) COLLATE "pg_catalog"."default"
 )
 ;
-
--- ----------------------------
--- Records of t_permission
--- ----------------------------
 
 -- ----------------------------
 -- Table structure for t_role
@@ -96,12 +113,6 @@ CREATE TABLE "public"."t_role" (
 ;
 
 -- ----------------------------
--- Records of t_role
--- ----------------------------
-INSERT INTO "public"."t_role" VALUES (1, 'ROLE_USER');
-INSERT INTO "public"."t_role" VALUES (2, 'ROLE_ADMIN');
-
--- ----------------------------
 -- Table structure for t_role_permission
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."t_role_permission";
@@ -111,10 +122,6 @@ CREATE TABLE "public"."t_role_permission" (
   "permission_id" int8 NOT NULL
 )
 ;
-
--- ----------------------------
--- Records of t_role_permission
--- ----------------------------
 
 -- ----------------------------
 -- Table structure for t_user
@@ -136,11 +143,6 @@ CREATE TABLE "public"."t_user" (
 ;
 
 -- ----------------------------
--- Records of t_user
--- ----------------------------
-INSERT INTO "public"."t_user" VALUES (1, 'admin', '$2a$10$0fXjEA/aZTCtGMme.6i4u.91sjQXSP2Ul7QFhSWeaHi8SHEDdJVWm', 'admin', NULL, 'admin@odoo.com', '2024-09-18 23:39:20.433', '2024-09-18 23:39:20.433', NULL, 0, NULL);
-
--- ----------------------------
 -- Table structure for t_user_role
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."t_user_role";
@@ -152,35 +154,39 @@ CREATE TABLE "public"."t_user_role" (
 ;
 
 -- ----------------------------
--- Records of t_user_role
+-- Alter sequences owned by
 -- ----------------------------
-INSERT INTO "public"."t_user_role" VALUES (1, 1, 1);
-INSERT INTO "public"."t_user_role" VALUES (2, 1, 2);
+SELECT setval('"public"."permission_seq"', 4, false);
 
 -- ----------------------------
 -- Alter sequences owned by
 -- ----------------------------
-SELECT setval('"public"."permission_seq"', 2, false);
+SELECT setval('"public"."role_permission_seq"', 4, false);
 
 -- ----------------------------
 -- Alter sequences owned by
 -- ----------------------------
-SELECT setval('"public"."role_permission_seq"', 2, false);
+SELECT setval('"public"."role_seq"', 5, true);
 
 -- ----------------------------
 -- Alter sequences owned by
 -- ----------------------------
-SELECT setval('"public"."role_seq"', 3, true);
+SELECT setval('"public"."user_role_seq"', 5, true);
 
 -- ----------------------------
 -- Alter sequences owned by
 -- ----------------------------
-SELECT setval('"public"."user_role_seq"', 3, true);
+SELECT setval('"public"."user_seq"', 5, true);
 
 -- ----------------------------
--- Alter sequences owned by
+-- Primary Key structure for table system_status
 -- ----------------------------
-SELECT setval('"public"."user_seq"', 2, true);
+ALTER TABLE "public"."system_status" ADD CONSTRAINT "system_status_pkey" PRIMARY KEY ("status_key");
+
+-- ----------------------------
+-- Primary Key structure for table t_message
+-- ----------------------------
+ALTER TABLE "public"."t_message" ADD CONSTRAINT "t_message_pkey" PRIMARY KEY ("id");
 
 -- ----------------------------
 -- Uniques structure for table t_permission
