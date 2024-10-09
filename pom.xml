@@ -26,6 +26,7 @@
         <hutool.version>5.8.29</hutool.version>
         <minio.version>8.5.12</minio.version>
         <shardingsphere.version>5.2.1</shardingsphere.version>
+        <flyway.version>9.22.3</flyway.version>
     </properties>
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -70,6 +71,11 @@
                 <groupId>org.apache.shardingsphere</groupId>
                 <artifactId>shardingsphere-jdbc-core-spring-boot-starter</artifactId>
                 <version>${shardingsphere.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.flywaydb</groupId>
+                <artifactId>flyway-core</artifactId>
+                <version>${flyway.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
